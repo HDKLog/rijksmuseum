@@ -5,15 +5,15 @@
 //  Created by Gari Sarkisyan on 09.08.23.
 //
 
-import Foundation
+import UIKit
 
 protocol VIPERFactory {
-    func createCollection() -> CollectionViewController
+    func createCollection() -> UIViewController
 }
 
 extension AppDelegate: VIPERFactory {
 
-    func createCollection() -> CollectionViewController {
+    func createCollection() -> UIViewController {
         let collectionView = CollectionViewController()
         let collectionInteractor = CollectionInteractor()
         let collectionPresenter = CollectionPresenter(view: collectionView, interactor: collectionInteractor)
@@ -21,6 +21,6 @@ extension AppDelegate: VIPERFactory {
         collectionPresenter.router = collectionRouter
         collectionView.presenter = collectionPresenter
 
-        return collectionView
+        return collectionRouter
     }
 }

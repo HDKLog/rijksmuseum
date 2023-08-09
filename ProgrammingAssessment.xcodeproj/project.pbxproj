@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */; };
+		4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */; };
+		4E4CCAD02A83FE6100A201C5 /* CollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */; };
+		4E4CCAD22A84002600A201C5 /* CollectionViewHeaderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCAD12A84002600A201C5 /* CollectionViewHeaderModel.swift */; };
+		4E4CCADA2A841C0000A201C5 /* DesignBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCAD92A841C0000A201C5 /* DesignBook.swift */; };
 		4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87A2A8346B600648D78 /* AppDelegate.swift */; };
 		4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */; };
 		4EFCB8842A8346B700648D78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EFCB8832A8346B700648D78 /* Assets.xcassets */; };
@@ -41,6 +46,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellModel.swift; sourceTree = "<group>"; };
+		4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewHeader.swift; sourceTree = "<group>"; };
+		4E4CCAD12A84002600A201C5 /* CollectionViewHeaderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewHeaderModel.swift; sourceTree = "<group>"; };
+		4E4CCAD92A841C0000A201C5 /* DesignBook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignBook.swift; sourceTree = "<group>"; };
 		4EFCB8772A8346B600648D78 /* ProgrammingAssessment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProgrammingAssessment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EFCB87A2A8346B600648D78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +96,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E4CCAD42A840CD900A201C5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */,
+				4E4CCAD52A840CEE00A201C5 /* Cells */,
+				4E4CCAD62A840E0D00A201C5 /* Headers */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4E4CCAD52A840CEE00A201C5 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */,
+				4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		4E4CCAD62A840E0D00A201C5 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */,
+				4E4CCAD12A84002600A201C5 /* CollectionViewHeaderModel.swift */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
 		4EFCB86E2A8346B600648D78 = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +149,8 @@
 			children = (
 				4EFCB87A2A8346B600648D78 /* AppDelegate.swift */,
 				4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */,
-				4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */,
+				4E4CCAD92A841C0000A201C5 /* DesignBook.swift */,
+				4E4CCAD42A840CD900A201C5 /* View */,
 				4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */,
 				4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */,
 				4EFCB8B62A836B0900648D78 /* CollectionItem.swift */,
@@ -273,7 +312,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4EFCB8B72A836B0900648D78 /* CollectionItem.swift in Sources */,
+				4E4CCAD02A83FE6100A201C5 /* CollectionViewHeader.swift in Sources */,
 				4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */,
+				4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */,
+				4E4CCADA2A841C0000A201C5 /* DesignBook.swift in Sources */,
+				4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */,
+				4E4CCAD22A84002600A201C5 /* CollectionViewHeaderModel.swift in Sources */,
 				4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */,
 				4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */,
 				4EFCB8AB2A834E6400648D78 /* CollectionPresenter.swift in Sources */,

@@ -7,13 +7,16 @@
 
 import Foundation
 
-typealias CollectionLoadingResult = (Result<[CollectionItem], Error>) -> Void
+typealias CollectionLoadingResul = Result<[CollectionItem], Error>
+typealias CollectionLoadingResultHandler = (CollectionLoadingResul) -> Void
 
 protocol CollectionInteracting {
-    func loadCollection(page: Int, count: Int, complition: @escaping CollectionLoadingResult)
+    func loadCollection(page: Int, count: Int, complition: @escaping CollectionLoadingResultHandler)
 }
 
 class CollectionInteractor: CollectionInteracting {
 
-    func loadCollection(page: Int, count: Int, complition: @escaping CollectionLoadingResult) { }
+    func loadCollection(page: Int, count: Int, complition: @escaping CollectionLoadingResultHandler) {
+
+    }
 }
