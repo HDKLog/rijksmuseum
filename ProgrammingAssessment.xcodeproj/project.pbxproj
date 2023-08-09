@@ -19,6 +19,8 @@
 		4EFCB8AF2A8351A100648D78 /* CollectionInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */; };
 		4EFCB8B12A83594E00648D78 /* VIPERFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */; };
 		4EFCB8B32A835D9700648D78 /* CollectionViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */; };
+		4EFCB8B72A836B0900648D78 /* CollectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B62A836B0900648D78 /* CollectionItem.swift */; };
+		4EFCB8B92A83739D00648D78 /* CollectionPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B82A83739D00648D78 /* CollectionPresenterTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionInteractor.swift; sourceTree = "<group>"; };
 		4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPERFactory.swift; sourceTree = "<group>"; };
 		4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewControllerTest.swift; sourceTree = "<group>"; };
+		4EFCB8B62A836B0900648D78 /* CollectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
+		4EFCB8B82A83739D00648D78 /* CollectionPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPresenterTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,7 @@
 				4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */,
 				4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */,
 				4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */,
+				4EFCB8B62A836B0900648D78 /* CollectionItem.swift */,
 				4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */,
 				4EFCB8832A8346B700648D78 /* Assets.xcassets */,
 				4EFCB8852A8346B700648D78 /* LaunchScreen.storyboard */,
@@ -123,6 +128,7 @@
 			children = (
 				4EFCB8912A8346B700648D78 /* ProgrammingAssessmentTests.swift */,
 				4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */,
+				4EFCB8B82A83739D00648D78 /* CollectionPresenterTest.swift */,
 			);
 			path = ProgrammingAssessmentTests;
 			sourceTree = "<group>";
@@ -266,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EFCB8B72A836B0900648D78 /* CollectionItem.swift in Sources */,
 				4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */,
 				4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */,
 				4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */,
@@ -279,6 +286,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EFCB8B92A83739D00648D78 /* CollectionPresenterTest.swift in Sources */,
 				4EFCB8B32A835D9700648D78 /* CollectionViewControllerTest.swift in Sources */,
 				4EFCB8922A8346B700648D78 /* ProgrammingAssessmentTests.swift in Sources */,
 			);
