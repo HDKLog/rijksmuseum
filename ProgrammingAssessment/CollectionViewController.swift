@@ -1,6 +1,12 @@
 import UIKit
 
-class CollectionViewController: UIViewController {
+protocol CollectionView {
+    
+}
+
+class CollectionViewController: UIViewController, CollectionView {
+
+    var presenter: CollectionPresenting?
 
     override func viewDidLoad() {
         super.viewDidLoad()

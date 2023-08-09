@@ -14,6 +14,11 @@
 		4EFCB8922A8346B700648D78 /* ProgrammingAssessmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8912A8346B700648D78 /* ProgrammingAssessmentTests.swift */; };
 		4EFCB89C2A8346B700648D78 /* ProgrammingAssessmentUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB89B2A8346B700648D78 /* ProgrammingAssessmentUITests.swift */; };
 		4EFCB89E2A8346B700648D78 /* ProgrammingAssessmentUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB89D2A8346B700648D78 /* ProgrammingAssessmentUITestsLaunchTests.swift */; };
+		4EFCB8AB2A834E6400648D78 /* CollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */; };
+		4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */; };
+		4EFCB8AF2A8351A100648D78 /* CollectionInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */; };
+		4EFCB8B12A83594E00648D78 /* VIPERFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */; };
+		4EFCB8B32A835D9700648D78 /* CollectionViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +50,11 @@
 		4EFCB8972A8346B700648D78 /* ProgrammingAssessmentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProgrammingAssessmentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EFCB89B2A8346B700648D78 /* ProgrammingAssessmentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgrammingAssessmentUITests.swift; sourceTree = "<group>"; };
 		4EFCB89D2A8346B700648D78 /* ProgrammingAssessmentUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgrammingAssessmentUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionPresenter.swift; sourceTree = "<group>"; };
+		4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionRouter.swift; sourceTree = "<group>"; };
+		4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionInteractor.swift; sourceTree = "<group>"; };
+		4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPERFactory.swift; sourceTree = "<group>"; };
+		4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewControllerTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,7 +106,11 @@
 			isa = PBXGroup;
 			children = (
 				4EFCB87A2A8346B600648D78 /* AppDelegate.swift */,
+				4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */,
 				4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */,
+				4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */,
+				4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */,
+				4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */,
 				4EFCB8832A8346B700648D78 /* Assets.xcassets */,
 				4EFCB8852A8346B700648D78 /* LaunchScreen.storyboard */,
 				4EFCB8882A8346B700648D78 /* Info.plist */,
@@ -108,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				4EFCB8912A8346B700648D78 /* ProgrammingAssessmentTests.swift */,
+				4EFCB8B22A835D9700648D78 /* CollectionViewControllerTest.swift */,
 			);
 			path = ProgrammingAssessmentTests;
 			sourceTree = "<group>";
@@ -253,6 +268,10 @@
 			files = (
 				4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */,
 				4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */,
+				4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */,
+				4EFCB8AB2A834E6400648D78 /* CollectionPresenter.swift in Sources */,
+				4EFCB8AF2A8351A100648D78 /* CollectionInteractor.swift in Sources */,
+				4EFCB8B12A83594E00648D78 /* VIPERFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EFCB8B32A835D9700648D78 /* CollectionViewControllerTest.swift in Sources */,
 				4EFCB8922A8346B700648D78 /* ProgrammingAssessmentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
