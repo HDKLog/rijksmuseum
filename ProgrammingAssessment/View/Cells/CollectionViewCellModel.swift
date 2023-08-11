@@ -8,7 +8,6 @@
 import Foundation
 
 struct CollectionViewCellModel {
-    static let resuableId = "CollectionViewCell"
     let imageData: Data
     let title: String
 }

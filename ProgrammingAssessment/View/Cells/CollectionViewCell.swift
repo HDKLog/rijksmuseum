@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import SkeletonView
 
 class CollectionViewCell: UICollectionViewCell {
+
+    static let resuableId = "CollectionViewCell"
+
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.tintColor = .blue
@@ -21,7 +25,6 @@ class CollectionViewCell: UICollectionViewCell {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.textColor = DesignBook.Color.Foreground.inverse.uiColor()
-        label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.small)
         return label
     }()
@@ -29,21 +32,7 @@ class CollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupContentViews()
-
-        let url = URL(string: "https://lh3.googleusercontent.com/SjuKgVllMl-wQ9sRUXch29gQpNg2NDiNSRsPGft0CzbGOIFwZktLNz7_689URZOGxOHFO76B722WD1RibHoBdOm7csga=s0")
-
-        DispatchQueue.global().async { [weak self] in
-            let data = try? Data(contentsOf: url!)
-
-            data.flatMap { [weak self] data in
-
-                DispatchQueue.main.async {
-                    self?.imageView.image = UIImage(data: data)
-                }
-            }
-        }
-        self.descriptionLabel.text = "De dans om het gouden kalf, Lucas van Leyden, ca. 1530"
-
+        setupSkeletonAnimation()
     }
 
     required init?(coder: NSCoder) {
@@ -56,6 +45,14 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.layer.borderColor = UIColor.lightGray.cgColor
 
         self.contentView.addSubview(imageView)
+        setupImageViewConstraints()
+
+        self.contentView.addSubview(descriptionLabel)
+        setupDescriptionLabelConstraints()
+
+    }
+
+    private func setupImageViewConstraints() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -63,8 +60,9 @@ class CollectionViewCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.heightAnchor.constraint(equalToConstant: 200),
         ])
+    }
 
-        self.contentView.addSubview(descriptionLabel)
+    private func setupDescriptionLabelConstraints() {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             descriptionLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 5),
@@ -72,6 +70,18 @@ class CollectionViewCell: UICollectionViewCell {
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
         ])
+    }
+
+    private func setupSkeletonAnimation() {
+
+        isSkeletonable = true
+
+        contentView.isSkeletonable = true
+
+        imageView.isSkeletonable = true
+
+        descriptionLabel.isSkeletonable = true
+        descriptionLabel.skeletonTextNumberOfLines = .custom(1)
     }
 
 

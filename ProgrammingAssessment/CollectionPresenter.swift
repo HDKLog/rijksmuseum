@@ -2,6 +2,14 @@ import Foundation
 
 protocol CollectionPresenting {
     func loadCollection()
+
+    func numberOfPages() -> Int
+    func numberOfItems(on page: Int) -> Int
+
+    func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void)
+    func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void)
+
+    func loadNextPage()
 }
 
 class CollectionPresenter: CollectionPresenting {
@@ -22,10 +30,26 @@ class CollectionPresenter: CollectionPresenting {
 
     func loadCollection() {
         view.configure(with: CollectionViewModel(title: "Collection"))
-        loadNext()
+        loadNextPage()
     }
 
-    private func loadNext() {
+    func numberOfPages() -> Int {
+        0
+    }
+
+    func numberOfItems(on page: Int) -> Int {
+        0
+    }
+
+    func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void) {
+
+    }
+
+    func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
+        
+    }
+
+    func loadNextPage() {
         interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
             switch result {
             case let .success(collection):
