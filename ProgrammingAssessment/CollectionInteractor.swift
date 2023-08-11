@@ -13,36 +13,23 @@ protocol CollectionInteracting {
 
 class CollectionInteractor: CollectionInteracting {
 
-    var imageData: Data?
+    let service = CollectionLoadingService()
 
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
 
-        let wis = "https://lh3.googleusercontent.com/mZj-trnVh6jeUDsl1o0a3xNXPat_UOZtKecS4LaZdTLcNoIqtd_yf6beJKCUVzk3NT5SSFeQ-hOzJEOOSV9sg8dHE6VjFjUrGfxwe5Sg=s0"
-        let webImage = CollectionPage.CollectionItem.Image(width: 10, height: 10, url: URL(string: wis))
-        let his = "https://lh3.googleusercontent.com/oY8pcdQahKwdBj_TFoV1UPUFkjY-XQZ5LcPb7Y2Aqexsg5g8h0A6bSWC9qpl-HbS46mX_5C51Du7bRATwQVdMPW0SBE3aDQALUZhCA8=s0"
-        let headerImage = CollectionPage.CollectionItem.Image(width: 10, height: 10, url: URL(string: his))
-        let item = CollectionPage.CollectionItem(id: "id",
-                                                 title: "title",
-                                                 description: "some description",
-                                                 webImage: webImage,
-                                                 headerImage: headerImage)
-        let items = Array(repeating: item, count: count)
-        let page = CollectionPage(title: "Page \(page)", items: items)
-
-        DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
+        service.loadCollection(page: page, count: count) { result in
             DispatchQueue.main.async {
-                completion(.success(page))
+                switch result {
+                case let .success(collectionInof):
+                    completion(.success( CollectionPage(title: "Page \(page + 1)", items: collectionInof.collectionItems) ))
+                case let .failure(error):
+                    completion(.failure(error))
+                }
             }
-
         }
     }
 
     func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
-
-        if let data = imageData {
-            completion(.success(data))
-            return
-        }
 
         let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -53,12 +40,32 @@ class CollectionInteractor: CollectionInteracting {
                     completion(.failure(error!))
                     return
                 }
-
-                self.imageData = data
                 completion(.success(data))
             }
         }
 
         task.resume()
+    }
+}
+
+extension CollectionInfo {
+    var collectionItems: [CollectionPage.CollectionItem] {
+        artObjects.map {
+            CollectionPage.CollectionItem(
+                id: $0.id,
+                title: $0.title,
+                description: $0.longTitle,
+                webImage: CollectionPage.CollectionItem.Image(
+                    width: $0.webImage.width,
+                    height: $0.webImage.height,
+                    url: URL(string: $0.webImage.url)
+                ),
+                headerImage: CollectionPage.CollectionItem.Image(
+                    width: $0.headerImage.width,
+                    height: $0.headerImage.height,
+                    url: URL(string: $0.headerImage.url)
+                )
+            )
+        }
     }
 }
