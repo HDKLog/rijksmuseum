@@ -21,7 +21,7 @@ class CollectionPresenter: CollectionPresenting {
     var currentPage: Int = 0
     let resultsOnPage: Int = 10
 
-    var collectionItems: [CollectionItem] = []
+    var collectionPages: [CollectionPage] = []
 
     init(view: CollectionView, interactor: CollectionInteracting) {
         self.view = view
@@ -34,27 +34,44 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func numberOfPages() -> Int {
-        0
+        collectionPages.count
     }
 
     func numberOfItems(on page: Int) -> Int {
-        0
+        collectionPages[page].items.count
     }
 
     func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void) {
 
-    }
+        let item = collectionPages[page].items[index]
+        guard let url = item.webImage.url
+        else {
+            completion(CollectionViewCellModel(imageData: Data(), title: item.title))
+            return
+        }
 
+        interactor.loadCollectionItemImageData(from: url) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case let .success(data):
+                    completion(CollectionViewCellModel(imageData: data, title: item.title))
+                case let .failure(error):
+                    print(error)
+                }
+            }
+        }
+    }
     func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
-        
+        completion(CollectionViewHeaderModel(title: "Page \(page+1)"))
     }
 
     func loadNextPage() {
         interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
             switch result {
-            case let .success(collection):
-                self?.collectionItems.append(contentsOf: collection)
+            case let .success(page):
+                self?.collectionPages.append(page)
                 self?.currentPage += 1
+                self?.view.updateCollection()
             case let .failure(error):
                 print(error)
             }

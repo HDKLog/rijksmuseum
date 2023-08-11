@@ -31,10 +31,18 @@ final class CollectionPresenterTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
-        var loadCollectionClosure: ( Int, Int, CollectionLoadingResultHandler) -> Void = { _, _, _ in }
-        func loadCollection(page: Int, count: Int, complition: @escaping CollectionLoadingResultHandler){
+        var loadCollectionClosure: (Int, Int, CollectionLoadingResultHandler) -> Void = { _, _, _ in }
+        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler){
             loadCollectionCalls += 1
-            loadCollectionClosure(page, count, complition)
+            loadCollectionClosure(page, count, completion)
+        }
+
+        var loadCollectionItemImageDataCalled: Bool { loadCollectionCalls > 0 }
+        var loadCollectionItemImageDataCalls: Int = 0
+        var loadCollectionItemImageClosure: (URL, CollectionImageLoadingResultHandler) -> Void = { _, _ in }
+        func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+            loadCollectionItemImageDataCalls += 1
+            loadCollectionItemImageClosure(url, completion)
         }
     }
 
