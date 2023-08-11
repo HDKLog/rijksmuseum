@@ -1,7 +1,8 @@
 import UIKit
 
 protocol CollectionView {
-    
+    func configure(with model: CollectionViewModel)
+    func updateCollection()
 }
 
 class CollectionViewController: UIViewController, CollectionView {
@@ -51,6 +52,13 @@ class CollectionViewController: UIViewController, CollectionView {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+    }
+
+    func configure(with model: CollectionViewModel) {
+
+    }
+    func updateCollection() {
+        
     }
 }
 
