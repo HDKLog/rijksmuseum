@@ -43,4 +43,14 @@ final class CollectionViewControllerTest: XCTestCase {
         XCTAssertEqual(presenter.loadCollectionCalls, 1)
     }
 
+    func test_viewController_onConfigure_setsTitle() {
+        let title = "Test Title"
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.configure(with: CollectionViewModel(title: title))
+
+        XCTAssertEqual(sut.titleLabel.text, title)
+    }
+
 }

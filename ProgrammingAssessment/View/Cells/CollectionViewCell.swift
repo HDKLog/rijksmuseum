@@ -22,7 +22,7 @@ class CollectionViewCell: UICollectionViewCell {
         label.lineBreakMode = .byWordWrapping
         label.textColor = DesignBook.Color.Foreground.inverse.uiColor()
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.small)
+        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.small)
         return label
     }()
 

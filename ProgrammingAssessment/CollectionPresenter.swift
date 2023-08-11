@@ -21,6 +21,7 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func loadCollection() {
+        view.configure(with: CollectionViewModel(title: "Collection"))
         loadNext()
     }
 

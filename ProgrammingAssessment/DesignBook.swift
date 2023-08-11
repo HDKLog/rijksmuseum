@@ -16,9 +16,9 @@ struct DesignBook {
             }
         }
 
-        
+
     }
-    
+
     struct Color {
         struct ColorWrapper {
             let name: String
@@ -26,20 +26,20 @@ struct DesignBook {
                 return UIColor(named: name)!
             }
         }
-        
+
         struct Background {
             static let main = ColorWrapper(name: "color-background-main")
             static let list = ColorWrapper(name: "color-background-list")
             static let inverse = ColorWrapper(name: "color-background-inverse")
         }
-        
+
         struct Foreground {
             static let highlited = ColorWrapper(name: "color-foreground-highlited")
             static let action = ColorWrapper(name: "color-foreground-action")
             static let element = ColorWrapper(name: "color-foreground-element")
             static let inverse = ColorWrapper(name: "color-foreground-inverse")
             static let light = ColorWrapper(name: "color-foreground-light")
-            
+
             static let purple = ColorWrapper(name: "color-foreground-purple")
             static let orange = ColorWrapper(name: "color-foreground-orange")
             static let green = ColorWrapper(name: "color-foreground-green")
@@ -59,9 +59,17 @@ struct DesignBook {
             }
 
             struct Text {
-                static let small: CGFloat = 16
-                static let medium: CGFloat = 32
-                static let large: CGFloat = 64
+                struct Font {
+                    static let small: CGFloat = 16
+                    static let medium: CGFloat = 18
+                    static let large: CGFloat = 22
+                }
+
+                struct Header {
+                    static let small: CGFloat = 32
+                    static let medium: CGFloat = 64
+                    static let large: CGFloat = 128
+                }
             }
         }
 

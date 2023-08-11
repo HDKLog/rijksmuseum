@@ -9,6 +9,13 @@ class CollectionViewController: UIViewController, CollectionView {
 
     var presenter: CollectionPresenting?
 
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = DesignBook.Color.Foreground.light.uiColor()
+        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.large)
+        return label
+    }()
+
     lazy var collectionView: UICollectionView = {
 
         let layout = UICollectionViewFlowLayout()
@@ -38,8 +45,13 @@ class CollectionViewController: UIViewController, CollectionView {
     }
 
     private func setup() {
-        view.backgroundColor = .white
+        view.backgroundColor = DesignBook.Color.Background.list.uiColor()
+        setupTitle()
         setupCollectionView()
+    }
+
+    private func setupTitle() {
+        navigationItem.titleView = titleLabel
     }
 
     private func setupCollectionView() {
@@ -55,7 +67,7 @@ class CollectionViewController: UIViewController, CollectionView {
     }
 
     func configure(with model: CollectionViewModel) {
-
+        titleLabel.text = model.title
     }
     func updateCollection() {
         

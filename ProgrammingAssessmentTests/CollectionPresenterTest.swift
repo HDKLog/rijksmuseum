@@ -75,5 +75,15 @@ final class CollectionPresenterTest: XCTestCase {
 
         XCTAssertEqual(loadedPage, 0)
     }
+
+    func test_collectionPresenter_onLoadCollection_configureView() {
+        let view = View()
+        let interactor = Interactor()
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertTrue(view.configureCalled)
+    }
     
 }
