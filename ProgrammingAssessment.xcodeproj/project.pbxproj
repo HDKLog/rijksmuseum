@@ -13,6 +13,7 @@
 		4E4CCAD22A84002600A201C5 /* CollectionViewHeaderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCAD12A84002600A201C5 /* CollectionViewHeaderModel.swift */; };
 		4E4CCADA2A841C0000A201C5 /* DesignBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCAD92A841C0000A201C5 /* DesignBook.swift */; };
 		4EACC24D2A86C1C4002C4101 /* CollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EACC24C2A86C1C4002C4101 /* CollectionViewModel.swift */; };
+		4EACC2502A86CA65002C4101 /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = 4EACC24F2A86CA65002C4101 /* SkeletonView */; };
 		4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87A2A8346B600648D78 /* AppDelegate.swift */; };
 		4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */; };
 		4EFCB8842A8346B700648D78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EFCB8832A8346B700648D78 /* Assets.xcassets */; };
@@ -66,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EACC2502A86CA65002C4101 /* SkeletonView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +172,9 @@
 			dependencies = (
 			);
 			name = ProgrammingAssessment;
+			packageProductDependencies = (
+				4EACC24F2A86CA65002C4101 /* SkeletonView */,
+			);
 			productName = ProgrammingAssessment;
 			productReference = 4EFCB8772A8346B600648D78 /* ProgrammingAssessment.app */;
 			productType = "com.apple.product-type.application";
@@ -220,6 +225,9 @@
 				Base,
 			);
 			mainGroup = 4EFCB86E2A8346B600648D78;
+			packageReferences = (
+				4EACC24E2A86CA65002C4101 /* XCRemoteSwiftPackageReference "SkeletonView" */,
+			);
 			productRefGroup = 4EFCB8782A8346B600648D78 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -543,6 +551,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4EACC24E2A86CA65002C4101 /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4EACC24F2A86CA65002C4101 /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4EACC24E2A86CA65002C4101 /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4EFCB86F2A8346B600648D78 /* Project object */;
 }
