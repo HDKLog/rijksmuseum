@@ -1,10 +1,3 @@
-//
-//  CollectionPresenterTest.swift
-//  CollectionPresenterTest
-//
-//  Created by Gari Sarkisyan on 09.08.23.
-//
-
 import XCTest
 
 @testable import ProgrammingAssessment

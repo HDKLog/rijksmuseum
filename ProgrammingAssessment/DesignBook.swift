@@ -1,10 +1,3 @@
-//
-//  DesignBook.swift
-//  WeatherApp
-//
-//  Created by Gari Sarkisiani on 01.09.21.
-//
-
 import UIKit
 
 struct DesignBook {

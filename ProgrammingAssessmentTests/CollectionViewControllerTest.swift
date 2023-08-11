@@ -1,10 +1,3 @@
-//
-//  CollectionViewControllerTest.swift
-//  ProgrammingAssessmentTests
-//
-//  Created by Gari Sarkisyan on 09.08.23.
-//
-
 import XCTest
 
 @testable import ProgrammingAssessment
@@ -21,7 +14,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var numberOfPagesCalled: Bool { numberOfPagesCalls > 0 }
         var numberOfPagesCalls: Int = 0
-        var numberOfPagesClosure: () -> Int = { 0 }
+        var numberOfPagesClosure: () -> Int = { 1 }
         func numberOfPages() -> Int {
             numberOfPagesCalls += 1
             return numberOfPagesClosure()
@@ -155,12 +148,7 @@ final class CollectionViewControllerTest: XCTestCase {
     }
 
     func test_viewController_onDisplayLastCell_tellPresenterToLoadNextPage() {
-        var numberOfPages = 0
         let presenter = Presenter()
-        presenter.numberOfPagesClosure = {
-            numberOfPages += 1
-            return numberOfPages
-        }
         presenter.numberOfItemsClosure = {_ in 10 }
         let sut = makeSut(presenter: presenter)
 
