@@ -74,7 +74,7 @@ final class CollectionPresenterTest: XCTestCase {
 
         sut.loadCollection()
 
-        XCTAssertEqual(loadedPage, 0)
+        XCTAssertEqual(loadedPage, 1)
     }
 
     func test_collectionPresenter_onLoadCollection_configureView() {

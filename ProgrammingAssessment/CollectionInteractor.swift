@@ -49,18 +49,23 @@ class CollectionInteractor: CollectionInteracting {
 }
 
 extension CollectionInfo {
-    var collectionItems: [CollectionPage.CollectionItem] {
+    typealias CollectionItem = CollectionPage.CollectionItem
+    typealias Image = CollectionPage.CollectionItem.Image
+
+    var collectionItems: [CollectionItem] {
         artObjects.map {
-            CollectionPage.CollectionItem(
+            CollectionItem(
                 id: $0.id,
                 title: $0.title,
                 description: $0.longTitle,
-                webImage: CollectionPage.CollectionItem.Image(
+                webImage: Image(
+                    guid: $0.webImage.guid,
                     width: $0.webImage.width,
                     height: $0.webImage.height,
                     url: URL(string: $0.webImage.url)
                 ),
-                headerImage: CollectionPage.CollectionItem.Image(
+                headerImage: Image(
+                    guid: $0.headerImage.guid,
                     width: $0.headerImage.width,
                     height: $0.headerImage.height,
                     url: URL(string: $0.headerImage.url)

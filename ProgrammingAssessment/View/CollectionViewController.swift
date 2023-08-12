@@ -10,6 +10,12 @@ class CollectionViewController: UIViewController, CollectionView {
 
     var presenter: CollectionPresenting?
 
+    var cachedItemsModels: [IndexPath: CollectionViewCellModel] = [:]
+    var loadingNextPage = false
+    var loadingIndexPaths: Set<IndexPath> = []
+
+    let loadingGroup = DispatchGroup()
+
     let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = DesignBook.Color.Foreground.light.uiColor()
@@ -43,6 +49,7 @@ class CollectionViewController: UIViewController, CollectionView {
 
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.isPrefetchingEnabled = false
 
         return collectionView
 
@@ -88,6 +95,7 @@ class CollectionViewController: UIViewController, CollectionView {
 
     func updateCollection() {
         collectionView.insertSections(IndexSet(integer: collectionView.numberOfSections))
+        loadingNextPage = false
     }
 }
 
@@ -108,11 +116,30 @@ extension CollectionViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.resuableId, for: indexPath)
         if let collectionCell = cell as? CollectionViewCell {
 
-            collectionCell.showAnimatedGradientSkeleton()
-            presenter?.itemModel(on: indexPath.section, at: indexPath.row) { model in
-                collectionCell.hideSkeleton()
+            collectionCell.reset()
+
+            if let model = cachedItemsModels[indexPath] {
                 collectionCell.configure(with: model)
+            } else if !loadingIndexPaths.contains(indexPath) {
+                loadingGroup.enter()
+                loadingIndexPaths.insert(indexPath)
+                print("loading \(indexPath)")
+                presenter?.itemModel(on: indexPath.section, at: indexPath.row) { model in
+
+                    self.loadingGroup.leave()
+                    self.cachedItemsModels[indexPath] = model
+                    self.loadingIndexPaths.remove(indexPath)
+
+                    if let configurableCell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
+                        configurableCell.configure(with: model)
+                        print("finish \(indexPath) Visible")
+                    } else {
+                        print("finish \(indexPath) Not visible")
+                    }
+
+                }
             }
+
         }
         return cell
     }
@@ -159,8 +186,13 @@ extension CollectionViewController: UICollectionViewDelegate {
         let lastSection = collectionView.numberOfSections-1
         let lastSectionLastItem = collectionView.numberOfItems(inSection: lastSection) - 1
         let lastIndexPath = IndexPath(row: max(lastSectionLastItem, 0), section: max(lastSection, 0))
-        if indexPath == lastIndexPath {
-            presenter?.loadNextPage()
+        if indexPath == lastIndexPath, !loadingNextPage {
+            loadingNextPage = true
+            DispatchQueue.global().async {
+                self.loadingGroup.wait()
+                self.presenter?.loadNextPage()
+            }
+
         }
     }
 }

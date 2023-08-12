@@ -79,7 +79,12 @@ class CollectionViewCell: UICollectionViewCell {
 
 
     func configure(with model: CollectionViewCellModel) {
+        contentView.hideSkeleton()
         imageView.image = UIImage(data: model.imageData)
         descriptionLabel.text = model.title
+    }
+
+    func reset() {
+        contentView.showAnimatedGradientSkeleton()
     }
 }

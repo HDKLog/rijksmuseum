@@ -3,6 +3,7 @@ import Foundation
 struct CollectionPage {
     struct CollectionItem {
         struct Image {
+            let guid: String
             let width: Int
             let height: Int
             let url: URL?

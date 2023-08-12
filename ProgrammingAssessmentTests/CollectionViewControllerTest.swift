@@ -22,7 +22,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var numberOfItemsCalled: Bool { numberOfItemsCalls > 0 }
         var numberOfItemsCalls: Int = 0
-        var numberOfItemsClosure: (Int) -> Int = { _ in 0 }
+        var numberOfItemsClosure: (Int) -> Int = { _ in 2 }
         func numberOfItems(on page: Int) -> Int {
             numberOfItemsCalls += 1
             return numberOfItemsClosure(page)
@@ -92,7 +92,6 @@ final class CollectionViewControllerTest: XCTestCase {
             numberOfPages += 1
             return numberOfPages
         }
-        presenter.numberOfItemsClosure = {_ in 1 }
         let sut = makeSut(presenter: presenter)
 
         sut.updateCollection()
@@ -107,7 +106,6 @@ final class CollectionViewControllerTest: XCTestCase {
             numberOfPages += 1
             return numberOfPages
         }
-        presenter.numberOfItemsClosure = {_ in 1 }
         let sut = makeSut(presenter: presenter)
 
         sut.updateCollection()
@@ -122,7 +120,6 @@ final class CollectionViewControllerTest: XCTestCase {
             numberOfPages += 1
             return numberOfPages
         }
-        presenter.numberOfItemsClosure = {_ in 1 }
         let sut = makeSut(presenter: presenter)
 
         sut.updateCollection()
@@ -138,7 +135,6 @@ final class CollectionViewControllerTest: XCTestCase {
             numberOfPages += 1
             return numberOfPages
         }
-        presenter.numberOfItemsClosure = {_ in 1 }
         let sut = makeSut(presenter: presenter)
 
         sut.updateCollection()
@@ -147,9 +143,28 @@ final class CollectionViewControllerTest: XCTestCase {
 
     }
 
+    func test_viewController_onMultipleCellLoading_doNotLoadCellModelTwice() {
+        var callsForIndexPath: Int = 0
+        let indexPath = IndexPath(row: 0, section: 0)
+        let presenter = Presenter()
+        presenter.itemModelClosure = {page, item, _ in
+            if indexPath.section == page && indexPath.row == item {
+                callsForIndexPath += 1
+            }
+        }
+        let sut = makeSut(presenter: presenter)
+
+        _ = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: indexPath)
+        _ = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: indexPath)
+
+        XCTAssertEqual(callsForIndexPath, 1)
+    }
+
     func test_viewController_onDisplayLastCell_tellPresenterToLoadNextPage() {
         let presenter = Presenter()
-        presenter.numberOfItemsClosure = {_ in 10 }
+        presenter.itemModelClosure = {page, page, completion in
+            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+        }
         let sut = makeSut(presenter: presenter)
 
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
@@ -158,4 +173,28 @@ final class CollectionViewControllerTest: XCTestCase {
 
     }
 
+    func test_viewController_onDisplayLastCell_waitForLoadingCellBeforeLoadNextPage() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        _ = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: sut.lastIndexPath)
+        sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
+
+        XCTAssertFalse(presenter.loadNextPageCalled)
+    }
+
+
+    func test_viewController_onMultipleDisplayLastCell_tellPresenterToLoadNextPageOnce() {
+        let presenter = Presenter()
+        presenter.itemModelClosure = {page, page, completion in
+            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+        }
+        let sut = makeSut(presenter: presenter)
+
+        sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
+        sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
+
+        XCTAssertEqual(presenter.loadNextPageCalls, 1)
+
+    }
 }
