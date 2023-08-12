@@ -4,6 +4,7 @@ import SkeletonView
 protocol CollectionView {
     func configure(with model: CollectionViewModel)
     func updateCollection()
+    func displayError(error: Error)
 }
 
 class CollectionViewController: UIViewController, CollectionView {
@@ -97,6 +98,12 @@ class CollectionViewController: UIViewController, CollectionView {
         collectionView.insertSections(IndexSet(integer: collectionView.numberOfSections))
         loadingNextPage = false
     }
+
+    func displayError(error: Error) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default))
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension CollectionViewController: UICollectionViewDataSource {
@@ -123,7 +130,6 @@ extension CollectionViewController: UICollectionViewDataSource {
             } else if !loadingIndexPaths.contains(indexPath) {
                 loadingGroup.enter()
                 loadingIndexPaths.insert(indexPath)
-                print("loading \(indexPath)")
                 presenter?.itemModel(on: indexPath.section, at: indexPath.row) { model in
 
                     self.loadingGroup.leave()
@@ -132,9 +138,6 @@ extension CollectionViewController: UICollectionViewDataSource {
 
                     if let configurableCell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
                         configurableCell.configure(with: model)
-                        print("finish \(indexPath) Visible")
-                    } else {
-                        print("finish \(indexPath) Not visible")
                     }
 
                 }

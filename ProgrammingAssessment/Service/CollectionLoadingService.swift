@@ -1,8 +1,6 @@
 import Foundation
 
 
-
-
 class CollectionLoadingService {
     enum LoadingError: Error {
         case invalidQuery

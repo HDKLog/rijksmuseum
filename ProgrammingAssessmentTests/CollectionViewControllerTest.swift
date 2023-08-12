@@ -30,7 +30,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var itemModelCalled: Bool { itemModelCalls > 0 }
         var itemModelCalls: Int = 0
-        var itemModelClosure: (Int, Int, (CollectionViewCellModel) ->Void) -> Void = { _, _, _ in }
+        var itemModelClosure: (Int, Int, @escaping (CollectionViewCellModel) ->Void) -> Void = { _, _, _ in }
         func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void) {
             itemModelCalls += 1
             itemModelClosure(page, index, completion)
@@ -38,7 +38,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var headerModelCalled: Bool { headerModelCalls > 0 }
         var headerModelCalls: Int = 0
-        var headerModelClosure: (Int, (CollectionViewHeaderModel) ->Void) -> Void = { _, _ in }
+        var headerModelClosure: (Int, @escaping (CollectionViewHeaderModel) ->Void) -> Void = { _, _ in }
         func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
             headerModelCalls += 1
             headerModelClosure(page, completion)
@@ -184,15 +184,18 @@ final class CollectionViewControllerTest: XCTestCase {
     }
 
 
-    func test_viewController_onMultipleDisplayLastCell_tellPresenterToLoadNextPageOnce() {
+    func test_viewController_onMultipleDisplayLastCell_afterLoadtellPresenterToLoadNextPageOnce() {
+        var completions: [(CollectionViewCellModel) ->Void] = []
         let presenter = Presenter()
-        presenter.itemModelClosure = {page, page, completion in
-            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+        presenter.itemModelClosure = {_, _, completion in
+            completions.append(completion)
         }
         let sut = makeSut(presenter: presenter)
 
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
+
+        completions.forEach { $0(CollectionViewCellModel(imageData: Data(), title: "")) }
 
         XCTAssertEqual(presenter.loadNextPageCalls, 1)
 

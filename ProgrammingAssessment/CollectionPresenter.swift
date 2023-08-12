@@ -74,7 +74,7 @@ class CollectionPresenter: CollectionPresenting {
                 self?.view.updateCollection()
                 self?.currentPage += 1
             case let .failure(error):
-                print(error)
+                self?.view.displayError(error: error)
             }
         }
     }
