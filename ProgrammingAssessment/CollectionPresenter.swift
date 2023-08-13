@@ -29,8 +29,20 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func loadCollection() {
-        view.configure(with: CollectionViewModel(title: "Collection"))
-        loadNextPage()
+
+        view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: true, firstScreenText: "Loading"))
+        interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
+            switch result {
+            case let .success(pageinfo):
+                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: nil))
+                self?.collectionPages.append(pageinfo)
+                self?.view.updateCollection()
+                self?.currentPage += 1
+            case let .failure(error):
+                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Error"))
+                self?.view.displayError(error: error)
+            }
+        }
     }
 
     func numberOfPages() -> Int {

@@ -56,6 +56,21 @@ class CollectionViewController: UIViewController, CollectionView {
 
     }()
 
+    let initialView: UIView = {
+        let view = UIView()
+        view.isSkeletonable = true
+        view.isHidden = true
+        return view
+    }()
+    
+    let initialViewLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = DesignBook.Color.Foreground.light.uiColor()
+        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.large)
+        return label
+    }()
+
+
     var lastIndexPath: IndexPath {
         let lastSection = collectionView.numberOfSections-1
         let lastSectionLastItem = collectionView.numberOfItems(inSection: lastSection) - 1
@@ -72,6 +87,7 @@ class CollectionViewController: UIViewController, CollectionView {
         view.backgroundColor = DesignBook.Color.Background.main.uiColor()
         setupTitle()
         setupCollectionView()
+        setupInitialView()
     }
 
     private func setupTitle() {
@@ -90,8 +106,30 @@ class CollectionViewController: UIViewController, CollectionView {
         ])
     }
 
+    private func setupInitialView() {
+        view.addSubview(initialView)
+        initialView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            initialView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: DesignBook.Layout.Spacing.medium),
+            initialView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -DesignBook.Layout.Spacing.medium),
+            initialView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: DesignBook.Layout.Spacing.medium),
+            initialView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -DesignBook.Layout.Spacing.medium)
+        ])
+
+
+        initialView.addSubview(initialViewLabel)
+        initialViewLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            initialViewLabel.centerXAnchor.constraint(equalTo: initialView.centerXAnchor),
+            initialViewLabel.centerYAnchor.constraint(equalTo: initialView.centerYAnchor)
+        ])
+    }
+
     func configure(with model: CollectionViewModel) {
         titleLabel.text = model.title
+        model.animatingLoad ? initialView.showAnimatedGradientSkeleton() : initialView.hideSkeleton()
+        initialViewLabel.text = model.firstScreenText
+        initialView.isHidden = model.firstScreenText == nil
     }
 
     func updateCollection() {
@@ -177,7 +215,6 @@ extension CollectionViewController: UICollectionViewDataSource {
         let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter,
                                                                      withReuseIdentifier: CollectionViewFooter.resuableId,
                                                                      for: indexPath)
-        //footer.isHidden = true
         return footer
     }
 

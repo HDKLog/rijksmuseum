@@ -80,9 +80,48 @@ final class CollectionViewControllerTest: XCTestCase {
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 
-        sut.configure(with: CollectionViewModel(title: title))
+        sut.configure(with: CollectionViewModel(title: title, animatingLoad: false, firstScreenText: nil))
 
         XCTAssertEqual(sut.titleLabel.text, title)
+    }
+
+    func test_viewController_onSetup_InitialViewIsHidden() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        XCTAssertTrue(sut.initialView.isHidden)
+    }
+
+    func test_viewController_onConfigure_withFirstScreenTextShowsInitialView() {
+        let title = "Test Title"
+        let firstScreenText = "Something..."
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: firstScreenText))
+
+        XCTAssertFalse(sut.initialView.isHidden)
+    }
+
+    func test_viewController_onConfigure_withFirstScreenTextShowsText() {
+        let title = "Test Title"
+        let firstScreenText = "Something..."
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: firstScreenText))
+
+        XCTAssertEqual(sut.initialViewLabel.text, firstScreenText)
+    }
+
+    func test_viewController_onConfigure_withEmptyFirstScreenTextHideInitialView() {
+        let title = "Test Title"
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: nil))
+
+        XCTAssertTrue(sut.initialView.isHidden)
     }
 
     func test_viewController_onUpdateCollection_askPresenterForNumberOfPages() {
