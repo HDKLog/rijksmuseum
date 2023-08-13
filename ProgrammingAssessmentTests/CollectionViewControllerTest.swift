@@ -5,6 +5,15 @@ final class CollectionViewControllerTest: XCTestCase {
 
     class Presenter: CollectionPresenting {
 
+        var chooseItemCalled: Bool { chooseItemCalls > 0 }
+        var chooseItemCalls: Int = 0
+        var chooseItemClosure: (Int, Int) -> Void = {_, _ in  }
+        func chooseItem(itemIndex: Int, on page: Int) {
+            chooseItemCalls += 1
+            chooseItemClosure(itemIndex, page)
+        }
+
+
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
         func loadCollection() {
@@ -297,6 +306,22 @@ final class CollectionViewControllerTest: XCTestCase {
         completions.forEach { $0(CollectionViewCellModel(imageData: Data(), title: "")) }
 
         XCTAssertEqual(presenter.loadNextPageCalls, 1)
+
+    }
+
+    func test_viewController_onSellectCell_tellPresenterToChooseCell() {
+        var completions: [(CollectionViewCellModel) ->Void] = []
+        let presenter = Presenter()
+        presenter.itemModelClosure = {_, _, completion in
+            completions.append(completion)
+        }
+        let sut = makeSut(presenter: presenter)
+
+        sut.collectionView.delegate?.collectionView?(sut.collectionView, didSelectItemAt: sut.lastIndexPath)
+
+        completions.forEach { $0(CollectionViewCellModel(imageData: Data(), title: "")) }
+
+        XCTAssertTrue(presenter.chooseItemCalled)
 
     }
 }

@@ -87,6 +87,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E349D802A891E3E00D56CA7 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				4E4CCAD42A840CD900A201C5 /* View */,
+				4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */,
+				4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */,
+				4EFCB8B62A836B0900648D78 /* CollectionPage.swift */,
+				4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
 		4E4CCAD42A840CD900A201C5 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,11 +171,7 @@
 				4EFCB87A2A8346B600648D78 /* AppDelegate.swift */,
 				4EFCB8B02A83594E00648D78 /* VIPERFactory.swift */,
 				4E4CCAD92A841C0000A201C5 /* DesignBook.swift */,
-				4E4CCAD42A840CD900A201C5 /* View */,
-				4EFCB8AA2A834E6400648D78 /* CollectionPresenter.swift */,
-				4EFCB8AE2A8351A100648D78 /* CollectionInteractor.swift */,
-				4EFCB8B62A836B0900648D78 /* CollectionPage.swift */,
-				4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */,
+				4E349D802A891E3E00D56CA7 /* Collection */,
 				4EFCB8832A8346B700648D78 /* Assets.xcassets */,
 				4EFCB8852A8346B700648D78 /* LaunchScreen.storyboard */,
 				4EFCB8882A8346B700648D78 /* Info.plist */,

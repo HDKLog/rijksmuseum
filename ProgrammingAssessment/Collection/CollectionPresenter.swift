@@ -8,6 +8,7 @@ protocol CollectionPresenting {
     
     func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void)
     func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void)
+    func chooseItem( itemIndex: Int, on page: Int)
 
     func loadNextPage()
 }
@@ -74,6 +75,11 @@ class CollectionPresenter: CollectionPresenting {
 
     func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
         completion(CollectionViewHeaderModel(title: collectionPages[page].title))
+    }
+
+    func chooseItem(itemIndex: Int, on page: Int) {
+        let item = collectionPages[page].items[itemIndex]
+        print("Selected item \(item)")
     }
 
     func loadNextPage() {

@@ -235,6 +235,10 @@ extension CollectionViewController: UICollectionViewDelegate {
 
         }
     }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presenter?.chooseItem(itemIndex: indexPath.row, on: indexPath.section)
+    }
 }
 
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
