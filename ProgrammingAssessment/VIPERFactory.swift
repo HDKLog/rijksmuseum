@@ -9,7 +9,8 @@ extension AppDelegate: VIPERFactory {
 
     func createCollection(artDetailViewController: ArtDetailsViewController) -> CollectionViewController {
         let view = CollectionViewController()
-        let interactor = CollectionInteractor()
+        let service = Service()
+        let interactor = CollectionInteractor(service: service)
         let presenter = CollectionPresenter(view: view, interactor: interactor)
         let router = CollectionRouter(collectionViewController: view, artDetailsViewController: artDetailViewController)
         presenter.router = router

@@ -13,7 +13,11 @@ protocol CollectionInteracting {
 
 class CollectionInteractor: CollectionInteracting {
 
-    let service = CollectionLoadingService()
+    let service: ServiceLoading
+
+    init(service: ServiceLoading) {
+        self.service = service
+    }
 
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
 
@@ -51,7 +55,7 @@ extension CollectionInfo {
     var collectionItems: [CollectionItem] {
         artObjects.map {
             CollectionItem(
-                id: $0.id,
+                id: $0.objectNumber,
                 title: $0.title,
                 description: $0.longTitle,
                 webImage: Image(

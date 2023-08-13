@@ -1,22 +1,28 @@
 import Foundation
 
+enum ServiceLoadingError: Error {
+    case invalidQuery
+    case requestError(Error)
+    case parsingError(Error)
+}
 
-class CollectionLoadingService {
-    enum LoadingError: Error {
-        case invalidQuery
-        case requestError(Error)
-        case parsingError(Error)
-    }
+typealias ServiceCollectionLoadingResult = (Result<CollectionInfo, ServiceLoadingError>)
+typealias ServiceCollectionLoadingHandler = (ServiceCollectionLoadingResult) -> Void
 
-    typealias CollectionLoadingResult = (Result<CollectionInfo, LoadingError>)
-    typealias CollectionLoadingHandler = (CollectionLoadingResult) -> Void
+typealias ServiceImageLoadingResult = (Result<Data, Error>)
+typealias ServiceImageLoadingHandler = (ServiceImageLoadingResult) -> Void
 
-    typealias ImageLoadingResult = (Result<Data, Error>)
-    typealias ImageLoadingHandler = (ImageLoadingResult) -> Void
+protocol ServiceLoading {
+    func loadCollection(page: Int, count: Int, completion: @escaping ServiceCollectionLoadingHandler)
+    func loadImage(url: URL, completion: @escaping ServiceImageLoadingHandler)
+
+}
+
+class Service: ServiceLoading {
 
     let session = URLSession.shared
 
-    func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingHandler) {
+    func loadCollection(page: Int, count: Int, completion: @escaping ServiceCollectionLoadingHandler) {
 
         let requestUrl = "https://www.rijksmuseum.nl/api/nl/collection"
         var parameters: [String: String] = [:]
@@ -53,9 +59,9 @@ class CollectionLoadingService {
         task.resume()
     }
 
-    func loadImage(url: URL, completion: @escaping ImageLoadingHandler) {
+    func loadImage(url: URL, completion: @escaping ServiceImageLoadingHandler) {
         let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = session.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil
             else {
                 completion(.failure(error!))

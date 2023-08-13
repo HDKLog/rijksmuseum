@@ -9,5 +9,7 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.backgroundColor = DesignBook.Color.Background.main.uiColor()
     }
 }
