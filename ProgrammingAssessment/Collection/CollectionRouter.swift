@@ -1,22 +1,24 @@
 import UIKit
 
-enum CollectionRoutingPath {
-    case collection
-    case itemDetails
-}
+protocol CollectionRoutingDestination {}
 
 protocol CollectionRouting {
-    func root(to: CollectionRoutingPath)
-    func rootBack()
+    func routeToArtDetail(ardId: String)
 }
 
-class CollectionRouter: UINavigationController, CollectionRouting {
+class CollectionRouter: CollectionRouting {
 
-    func root(to: CollectionRoutingPath) {
+    let collectionViewController: CollectionViewController!
+    let artDetailsViewController: ArtDetailsViewController!
 
+    init(collectionViewController: CollectionViewController, artDetailsViewController: ArtDetailsViewController) {
+        self.collectionViewController = collectionViewController
+        self.artDetailsViewController = artDetailsViewController
     }
 
-    func rootBack() {
-        
+    func routeToArtDetail(ardId: String) {
+        collectionViewController.navigationController?.pushViewController(artDetailsViewController, animated: true)
+        artDetailsViewController.presenter?.loadArt(artId: ardId)
     }
+
 }

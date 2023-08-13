@@ -79,7 +79,7 @@ class CollectionPresenter: CollectionPresenting {
 
     func chooseItem(itemIndex: Int, on page: Int) {
         let item = collectionPages[page].items[itemIndex]
-        print("Selected item \(item)")
+        router?.routeToArtDetail(ardId: item.id)
     }
 
     func loadNextPage() {

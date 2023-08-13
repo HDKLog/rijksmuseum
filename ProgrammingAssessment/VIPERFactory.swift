@@ -1,19 +1,31 @@
 import UIKit
 
 protocol VIPERFactory {
-    func createCollection() -> UIViewController
+    func createCollection(artDetailViewController: ArtDetailsViewController) -> CollectionViewController
+    func createArtDetails() -> ArtDetailsViewController
 }
 
 extension AppDelegate: VIPERFactory {
 
-    func createCollection() -> UIViewController {
-        let collectionView = CollectionViewController()
-        let collectionInteractor = CollectionInteractor()
-        let collectionPresenter = CollectionPresenter(view: collectionView, interactor: collectionInteractor)
-        let collectionRouter = CollectionRouter(rootViewController: collectionView)
-        collectionPresenter.router = collectionRouter
-        collectionView.presenter = collectionPresenter
+    func createCollection(artDetailViewController: ArtDetailsViewController) -> CollectionViewController {
+        let view = CollectionViewController()
+        let interactor = CollectionInteractor()
+        let presenter = CollectionPresenter(view: view, interactor: interactor)
+        let router = CollectionRouter(collectionViewController: view, artDetailsViewController: artDetailViewController)
+        presenter.router = router
+        view.presenter = presenter
 
-        return collectionRouter
+        return view
+    }
+
+    func createArtDetails() -> ArtDetailsViewController {
+        let view = ArtDetailsViewController()
+        let interactor = ArtDetailsInteractor()
+        let presenter = ArtDetailsPresenter(view: view, interactor: interactor)
+        let router = ArtDetailsRouter(artDetailsViewController: view)
+        presenter.router = router
+        view.presenter = presenter
+
+        return view
     }
 }

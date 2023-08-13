@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E349D832A8939E500D56CA7 /* ArtDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D822A8939E500D56CA7 /* ArtDetailsViewController.swift */; };
+		4E349D852A893A6400D56CA7 /* ArtDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D842A893A6400D56CA7 /* ArtDetailsPresenter.swift */; };
+		4E349D872A893AE600D56CA7 /* ArtDetailsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D862A893AE600D56CA7 /* ArtDetailsInteractor.swift */; };
+		4E349D892A893B6B00D56CA7 /* ArtDetailsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D882A893B6B00D56CA7 /* ArtDetailsRouter.swift */; };
 		4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */; };
 		4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */; };
 		4E4CCAD02A83FE6100A201C5 /* CollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */; };
@@ -42,6 +46,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4E349D822A8939E500D56CA7 /* ArtDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsViewController.swift; sourceTree = "<group>"; };
+		4E349D842A893A6400D56CA7 /* ArtDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsPresenter.swift; sourceTree = "<group>"; };
+		4E349D862A893AE600D56CA7 /* ArtDetailsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsInteractor.swift; sourceTree = "<group>"; };
+		4E349D882A893B6B00D56CA7 /* ArtDetailsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsRouter.swift; sourceTree = "<group>"; };
 		4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellModel.swift; sourceTree = "<group>"; };
 		4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewHeader.swift; sourceTree = "<group>"; };
@@ -97,6 +105,17 @@
 				4EFCB8AC2A834F2600648D78 /* CollectionRouter.swift */,
 			);
 			path = Collection;
+			sourceTree = "<group>";
+		};
+		4E349D812A8933F100D56CA7 /* ArtDetails */ = {
+			isa = PBXGroup;
+			children = (
+				4E349D822A8939E500D56CA7 /* ArtDetailsViewController.swift */,
+				4E349D842A893A6400D56CA7 /* ArtDetailsPresenter.swift */,
+				4E349D862A893AE600D56CA7 /* ArtDetailsInteractor.swift */,
+				4E349D882A893B6B00D56CA7 /* ArtDetailsRouter.swift */,
+			);
+			path = ArtDetails;
 			sourceTree = "<group>";
 		};
 		4E4CCAD42A840CD900A201C5 /* View */ = {
@@ -173,6 +192,7 @@
 				4E4CCAD92A841C0000A201C5 /* DesignBook.swift */,
 				4E349D802A891E3E00D56CA7 /* Collection */,
 				4EFCB8832A8346B700648D78 /* Assets.xcassets */,
+				4E349D812A8933F100D56CA7 /* ArtDetails */,
 				4EFCB8852A8346B700648D78 /* LaunchScreen.storyboard */,
 				4EFCB8882A8346B700648D78 /* Info.plist */,
 			);
@@ -298,9 +318,11 @@
 				4EFCB8B72A836B0900648D78 /* CollectionPage.swift in Sources */,
 				4E4CCAD02A83FE6100A201C5 /* CollectionViewHeader.swift in Sources */,
 				4EACC24D2A86C1C4002C4101 /* CollectionViewModel.swift in Sources */,
+				4E349D872A893AE600D56CA7 /* ArtDetailsInteractor.swift in Sources */,
 				4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */,
 				4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */,
 				4E4CCADA2A841C0000A201C5 /* DesignBook.swift in Sources */,
+				4E349D852A893A6400D56CA7 /* ArtDetailsPresenter.swift in Sources */,
 				4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */,
 				4EACC2582A86E022002C4101 /* CollectionInfo.swift in Sources */,
 				4E4CCAD22A84002600A201C5 /* CollectionViewHeaderModel.swift in Sources */,
@@ -309,7 +331,9 @@
 				4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */,
 				4EACC2562A86DFD5002C4101 /* CollectionLoadingService.swift in Sources */,
 				4EFCB8AB2A834E6400648D78 /* CollectionPresenter.swift in Sources */,
+				4E349D832A8939E500D56CA7 /* ArtDetailsViewController.swift in Sources */,
 				4EFCB8AF2A8351A100648D78 /* CollectionInteractor.swift in Sources */,
+				4E349D892A893B6B00D56CA7 /* ArtDetailsRouter.swift in Sources */,
 				4EFCB8B12A83594E00648D78 /* VIPERFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
