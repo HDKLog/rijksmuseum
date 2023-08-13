@@ -21,7 +21,7 @@ class CollectionInteractor: CollectionInteracting {
             DispatchQueue.main.async {
                 switch result {
                 case let .success(collectionInof):
-                    completion(.success( CollectionPage(title: "Page \(page + 1)", items: collectionInof.collectionItems) ))
+                    completion(.success( CollectionPage(title: "Page \(page)", items: collectionInof.collectionItems) ))
                 case let .failure(error):
                     completion(.failure(error))
                 }

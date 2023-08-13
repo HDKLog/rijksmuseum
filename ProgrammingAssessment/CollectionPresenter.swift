@@ -63,7 +63,7 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
-        completion(CollectionViewHeaderModel(title: "Page \(page+1)"))
+        completion(CollectionViewHeaderModel(title: collectionPages[page].title))
     }
 
     func loadNextPage() {
