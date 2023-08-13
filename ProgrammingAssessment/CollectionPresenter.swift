@@ -44,7 +44,7 @@ class CollectionPresenter: CollectionPresenting {
     func itemModel(on page: Int, at index:Int, completion: @escaping (CollectionViewCellModel) ->Void) {
         
         let item = collectionPages[page].items[index]
-        guard let url = item.webImage.url
+        guard let url = item.webImage.thumbnailUrl
         else {
             completion(CollectionViewCellModel(imageData: Data(), title: item.title))
             return

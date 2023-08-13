@@ -160,6 +160,66 @@ final class CollectionViewControllerTest: XCTestCase {
         XCTAssertEqual(callsForIndexPath, 1)
     }
 
+    func test_viewController_onLoadCell_setImageforCell() {
+        let image = UIImage.init(systemName: "heart.fill")!
+        var numberOfPages = 0
+        let indexPath = IndexPath(row: 0, section: 0)
+        let presenter = Presenter()
+        presenter.itemModelClosure = {page, item, completion in
+            completion(CollectionViewCellModel(imageData: image.pngData()!, title: ""))
+        }
+        presenter.numberOfPagesClosure = {
+            numberOfPages += 1
+            return numberOfPages
+        }
+        let sut = makeSut(presenter: presenter)
+
+        sut.updateCollection()
+        let cell = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: indexPath) as? CollectionViewCell
+
+        XCTAssertNotNil( cell?.imageView.image)
+    }
+
+    func test_viewController_onLoadCell_setDescription() {
+        let description = "Description"
+        var numberOfPages = 0
+        let indexPath = IndexPath(row: 0, section: 0)
+        let presenter = Presenter()
+        presenter.itemModelClosure = {page, item, completion in
+            completion(CollectionViewCellModel(imageData: Data(), title: description))
+        }
+        presenter.numberOfPagesClosure = {
+            numberOfPages += 1
+            return numberOfPages
+        }
+        let sut = makeSut(presenter: presenter)
+
+        sut.updateCollection()
+        let cell = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: indexPath) as? CollectionViewCell
+
+        XCTAssertEqual( cell?.descriptionLabel.text, description)
+    }
+
+    func test_viewController_onLoadHeader_setHeaderTitle() {
+        let title = "Title"
+        var numberOfPages = 0
+        let indexPath = IndexPath(row: 0, section: 0)
+        let presenter = Presenter()
+        presenter.headerModelClosure = {page, completion in
+            completion(CollectionViewHeaderModel(title: title))
+        }
+        presenter.numberOfPagesClosure = {
+            numberOfPages += 1
+            return numberOfPages
+        }
+        let sut = makeSut(presenter: presenter)
+
+        sut.updateCollection()
+        let header = sut.collectionView.dataSource?.collectionView?(sut.collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? CollectionViewHeader
+
+        XCTAssertEqual( header?.textLabel.text, title)
+    }
+
     func test_viewController_onDisplayLastCell_tellPresenterToLoadNextPage() {
         let presenter = Presenter()
         presenter.itemModelClosure = {page, page, completion in
