@@ -31,20 +31,16 @@ class CollectionInteractor: CollectionInteracting {
 
     func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
 
-        let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-
+        service.loadImage(url: url) { result in
             DispatchQueue.main.async {
-                guard let data = data, error == nil
-                else {
-                    completion(.failure(error!))
-                    return
+                switch result {
+                case let .success(data):
+                    completion(.success( data))
+                case let .failure(error):
+                    completion(.failure(error))
                 }
-                completion(.success(data))
             }
         }
-
-        task.resume()
     }
 }
 

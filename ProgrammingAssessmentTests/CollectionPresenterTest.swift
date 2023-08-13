@@ -154,13 +154,10 @@ final class CollectionPresenterTest: XCTestCase {
 
         sut.loadNextPage()
 
-        let exp = expectation(description: "\(#function)\(#line)")
         sut.itemModel(on: 0, at: 0) { model in
             loadedModel = model
-            exp.fulfill()
         }
 
-        waitForExpectations(timeout: 2)
         XCTAssertEqual(loadedModel, CollectionViewCellModel(imageData: Data(), title: ""))
     }
 
@@ -179,13 +176,10 @@ final class CollectionPresenterTest: XCTestCase {
 
         sut.loadNextPage()
 
-        let exp = expectation(description: "\(#function)\(#line)")
         sut.headerModel(on: 0) { model in
             loadedModel = model
-            exp.fulfill()
         }
 
-        waitForExpectations(timeout: 2)
         XCTAssertEqual(loadedModel, CollectionViewHeaderModel(title: "Page 1"))
     }
 

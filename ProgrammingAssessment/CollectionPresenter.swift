@@ -51,13 +51,11 @@ class CollectionPresenter: CollectionPresenting {
         }
         
         interactor.loadCollectionItemImageData(from: url) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case let .success(data):
-                    completion(CollectionViewCellModel(imageData: data, title: item.title))
-                case let .failure(error):
-                    print(error)
-                }
+            switch result {
+            case let .success(data):
+                completion(CollectionViewCellModel(imageData: data, title: item.title))
+            case let .failure(error):
+                print(error)
             }
         }
     }

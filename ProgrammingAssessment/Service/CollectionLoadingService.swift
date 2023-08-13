@@ -9,7 +9,10 @@ class CollectionLoadingService {
     }
 
     typealias CollectionLoadingResult = (Result<CollectionInfo, LoadingError>)
-    typealias CollectionLoadingHandler = (Result<CollectionInfo, LoadingError>) -> Void
+    typealias CollectionLoadingHandler = (CollectionLoadingResult) -> Void
+
+    typealias ImageLoadingResult = (Result<Data, Error>)
+    typealias ImageLoadingHandler = (ImageLoadingResult) -> Void
 
     let session = URLSession.shared
 
@@ -45,6 +48,20 @@ class CollectionLoadingService {
                     completion(.failure(.parsingError(error)))
                 }
             }
+        }
+
+        task.resume()
+    }
+
+    func loadImage(url: URL, completion: @escaping ImageLoadingHandler) {
+        let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil
+            else {
+                completion(.failure(error!))
+                return
+            }
+            completion(.success(data))
         }
 
         task.resume()
