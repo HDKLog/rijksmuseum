@@ -15,10 +15,17 @@ enum ArtDetailsLoadingError: Error {
 typealias ArtDetailsLoadingResult = Result<ArtDetails, ArtDetailsLoadingError>
 typealias ArtDetailsLoadingResultHandler = (ArtDetailsLoadingResult) -> Void
 
+enum ArtDetailsImageLoadingError: Error {
+    case serviceError(Error)
+}
+
+typealias ArtDetailsImageLoadingResult = Result<Data, ArtDetailsImageLoadingError>
+typealias ArtDetailsImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
 
 protocol ArtDetailsInteracting {
 
     func laodArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler)
+    func loadCollectionItemImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler)
 }
 
 class ArtDetailsInteractor: ArtDetailsInteracting {
@@ -49,6 +56,20 @@ class ArtDetailsInteractor: ArtDetailsInteracting {
                 break
             case let .failure(error):
                 DispatchQueue.main.async {
+                    completion(.failure(.serviceError(error)))
+                }
+            }
+        }
+    }
+
+    func loadCollectionItemImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+        let query = RijksmuseumImageQuery(url: url.absoluteString)
+        service.getData(query: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case let .success(data):
+                    completion(.success( data))
+                case let .failure(error):
                     completion(.failure(.serviceError(error)))
                 }
             }

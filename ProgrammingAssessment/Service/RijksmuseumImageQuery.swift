@@ -2,7 +2,7 @@ import Foundation
 
 class RijksmuseumImageQuery: ServiceQuery {
 
-    var scale: Int = 0
+    var scale: Int? = nil
     let url: String
 
     init(url: String) {
@@ -15,6 +15,7 @@ class RijksmuseumImageQuery: ServiceQuery {
     }
 
     func getUrl() -> URL? {
-        return URL(string: "\(url)\(scale)")
+        let appendix = scale.flatMap { "\($0)" } ?? ""
+        return URL(string: "\(url)\(appendix)")
     }
 }
