@@ -5,6 +5,10 @@ enum CollectionLoadingError: Error {
     case serviceError(ServiceLoadingError)
 }
 
+enum CollectionImageLoadingError: Error {
+    case serviceError(Error)
+}
+
 typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>
 typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
 
@@ -13,7 +17,7 @@ enum CollectionImageLoadingScale: Int {
     case thumbnail = 400
 }
 
-typealias CollectionImageLoadingResult = Result<Data, Error>
+typealias CollectionImageLoadingResult = Result<Data, CollectionImageLoadingError>
 typealias CollectionImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
 
 protocol CollectionInteracting {
@@ -72,7 +76,7 @@ class CollectionInteractor: CollectionInteracting {
                 case let .success(data):
                     completion(.success( data))
                 case let .failure(error):
-                    completion(.failure(error))
+                    completion(.failure(.serviceError(error)))
                 }
             }
         }
