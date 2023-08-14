@@ -21,7 +21,8 @@ extension AppDelegate: VIPERFactory {
 
     func createArtDetails() -> ArtDetailsViewController {
         let view = ArtDetailsViewController()
-        let interactor = ArtDetailsInteractor()
+        let service = Service()
+        let interactor = ArtDetailsInteractor(service: service)
         let presenter = ArtDetailsPresenter(view: view, interactor: interactor)
         let router = ArtDetailsRouter(artDetailsViewController: view)
         presenter.router = router

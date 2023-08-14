@@ -2,6 +2,7 @@ import Foundation
 
 protocol ArtDetailsPresenting {
 
+    func loadView()
     func loadArt(artId: String)
 
 }
@@ -16,6 +17,11 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
         self.interactor = interactor
     }
 
+    func loadView() {
+        view.configure()
+    }
+
     func loadArt(artId: String) {
+        interactor.laodArtDetails(artId: artId) { _ in }
     }
 }
