@@ -18,10 +18,18 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
     }
 
     func loadView() {
-        view.configure()
+        view.configure(with: ArtDetailsViewModel.InitialInfo(backButtonTitle: "Collection"))
     }
 
     func loadArt(artId: String) {
-        interactor.laodArtDetails(artId: artId) { _ in }
+        interactor.laodArtDetails(artId: artId) { result in
+            switch result {
+            case let .success(artDetails):
+                let model = ArtDetailsViewModel.ArtDetails(title: artDetails.title)
+                self.view.updateDetails(with: model)
+            case let .failure(error):
+                print(error)
+            }
+        }
     }
 }

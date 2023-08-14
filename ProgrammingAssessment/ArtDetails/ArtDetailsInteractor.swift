@@ -12,7 +12,7 @@ enum ArtDetailsLoadingError: Error {
     case serviceError(ServiceLoadingError)
 }
 
-typealias ArtDetailsLoadingResult = Result<String, ArtDetailsLoadingError>
+typealias ArtDetailsLoadingResult = Result<ArtDetails, ArtDetailsLoadingError>
 typealias ArtDetailsLoadingResultHandler = (ArtDetailsLoadingResult) -> Void
 
 
@@ -35,11 +35,36 @@ class ArtDetailsInteractor: ArtDetailsInteracting {
         service.getData(query: query) { result in
             switch result {
             case let .success(data):
-                print(String(data: data, encoding: .utf8)!)
+                do {
+                    let artDetailsInfo = try JSONDecoder().decode(ArtDetailsInfo.self, from: data)
+                    let artDetails = artDetailsInfo.artDetails
+                    DispatchQueue.main.async {
+                        completion(.success( artDetails ))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(.parsingError(error)))
+                    }
+                }
+                break
             case let .failure(error):
-                print(error)
+                DispatchQueue.main.async {
+                    completion(.failure(.serviceError(error)))
+                }
             }
         }
     }
 
+}
+
+extension ArtDetailsInfo {
+    var artDetails: ArtDetails {
+        ArtDetails(id: artObject.id,
+                   title: artObject.title,
+                   description: artObject.description,
+                   webImage: ArtDetails.Image(guid: artObject.webImage.guid,
+                                              width: artObject.webImage.width,
+                                              height: artObject.webImage.height,
+                                              url: URL(string: artObject.webImage.url)))
+    }
 }

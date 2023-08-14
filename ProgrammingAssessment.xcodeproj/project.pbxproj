@@ -16,6 +16,10 @@
 		4E349D8F2A8A110D00D56CA7 /* RijksmuseumImageQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D8E2A8A110D00D56CA7 /* RijksmuseumImageQuery.swift */; };
 		4E349D912A8A1F7600D56CA7 /* CollectionInteractorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D902A8A1F7600D56CA7 /* CollectionInteractorTest.swift */; };
 		4E349D932A8A4B3D00D56CA7 /* ArtDetailsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D922A8A4B3D00D56CA7 /* ArtDetailsViewControllerTests.swift */; };
+		4E349D982A8A8AAB00D56CA7 /* ArtDetailsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D972A8A8AAB00D56CA7 /* ArtDetailsInfo.swift */; };
+		4E349D9A2A8A8C6A00D56CA7 /* ArtDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D992A8A8C6A00D56CA7 /* ArtDetails.swift */; };
+		4E349D9C2A8A8F2E00D56CA7 /* ArtDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D9B2A8A8F2E00D56CA7 /* ArtDetailsViewModel.swift */; };
+		4E349D9E2A8AA9D100D56CA7 /* ArtDetailsInteractorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E349D9D2A8AA9D100D56CA7 /* ArtDetailsInteractorTest.swift */; };
 		4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */; };
 		4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */; };
 		4E4CCAD02A83FE6100A201C5 /* CollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */; };
@@ -60,6 +64,10 @@
 		4E349D8E2A8A110D00D56CA7 /* RijksmuseumImageQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RijksmuseumImageQuery.swift; sourceTree = "<group>"; };
 		4E349D902A8A1F7600D56CA7 /* CollectionInteractorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionInteractorTest.swift; sourceTree = "<group>"; };
 		4E349D922A8A4B3D00D56CA7 /* ArtDetailsViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsViewControllerTests.swift; sourceTree = "<group>"; };
+		4E349D972A8A8AAB00D56CA7 /* ArtDetailsInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsInfo.swift; sourceTree = "<group>"; };
+		4E349D992A8A8C6A00D56CA7 /* ArtDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetails.swift; sourceTree = "<group>"; };
+		4E349D9B2A8A8F2E00D56CA7 /* ArtDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsViewModel.swift; sourceTree = "<group>"; };
+		4E349D9D2A8AA9D100D56CA7 /* ArtDetailsInteractorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtDetailsInteractorTest.swift; sourceTree = "<group>"; };
 		4E4CCACB2A83F29100A201C5 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		4E4CCACD2A83F60D00A201C5 /* CollectionViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellModel.swift; sourceTree = "<group>"; };
 		4E4CCACF2A83FE6100A201C5 /* CollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewHeader.swift; sourceTree = "<group>"; };
@@ -121,8 +129,10 @@
 			isa = PBXGroup;
 			children = (
 				4E349D822A8939E500D56CA7 /* ArtDetailsViewController.swift */,
+				4E349D9B2A8A8F2E00D56CA7 /* ArtDetailsViewModel.swift */,
 				4E349D842A893A6400D56CA7 /* ArtDetailsPresenter.swift */,
 				4E349D862A893AE600D56CA7 /* ArtDetailsInteractor.swift */,
+				4E349D992A8A8C6A00D56CA7 /* ArtDetails.swift */,
 				4E349D882A893B6B00D56CA7 /* ArtDetailsRouter.swift */,
 			);
 			path = ArtDetails;
@@ -174,6 +184,7 @@
 				4E349D8E2A8A110D00D56CA7 /* RijksmuseumImageQuery.swift */,
 				4E349D8A2A8A013300D56CA7 /* ServiceQuery.swift */,
 				4EACC2572A86E022002C4101 /* CollectionInfo.swift */,
+				4E349D972A8A8AAB00D56CA7 /* ArtDetailsInfo.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -220,6 +231,7 @@
 				4EFCB8B82A83739D00648D78 /* CollectionPresenterTest.swift */,
 				4E349D902A8A1F7600D56CA7 /* CollectionInteractorTest.swift */,
 				4E349D922A8A4B3D00D56CA7 /* ArtDetailsViewControllerTests.swift */,
+				4E349D9D2A8AA9D100D56CA7 /* ArtDetailsInteractorTest.swift */,
 			);
 			path = ProgrammingAssessmentTests;
 			sourceTree = "<group>";
@@ -335,9 +347,12 @@
 				4EACC24D2A86C1C4002C4101 /* CollectionViewModel.swift in Sources */,
 				4E349D872A893AE600D56CA7 /* ArtDetailsInteractor.swift in Sources */,
 				4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */,
+				4E349D9C2A8A8F2E00D56CA7 /* ArtDetailsViewModel.swift in Sources */,
+				4E349D9A2A8A8C6A00D56CA7 /* ArtDetails.swift in Sources */,
 				4E4CCACE2A83F60D00A201C5 /* CollectionViewCellModel.swift in Sources */,
 				4E4CCADA2A841C0000A201C5 /* DesignBook.swift in Sources */,
 				4E349D852A893A6400D56CA7 /* ArtDetailsPresenter.swift in Sources */,
+				4E349D982A8A8AAB00D56CA7 /* ArtDetailsInfo.swift in Sources */,
 				4E4CCACC2A83F29100A201C5 /* CollectionViewCell.swift in Sources */,
 				4EACC2582A86E022002C4101 /* CollectionInfo.swift in Sources */,
 				4E4CCAD22A84002600A201C5 /* CollectionViewHeaderModel.swift in Sources */,
@@ -365,6 +380,7 @@
 				4EFCB8B32A835D9700648D78 /* CollectionViewControllerTest.swift in Sources */,
 				4E349D932A8A4B3D00D56CA7 /* ArtDetailsViewControllerTests.swift in Sources */,
 				4EFCB8922A8346B700648D78 /* ProgrammingAssessmentTests.swift in Sources */,
+				4E349D9E2A8AA9D100D56CA7 /* ArtDetailsInteractorTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,7 +456,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -494,7 +510,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

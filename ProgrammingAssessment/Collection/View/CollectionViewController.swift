@@ -127,6 +127,7 @@ class CollectionViewController: UIViewController, CollectionView {
 
     func configure(with model: CollectionViewModel) {
         titleLabel.text = model.title
+        navigationItem.title = model.title
         model.animatingLoad ? initialView.showAnimatedGradientSkeleton() : initialView.hideSkeleton()
         initialViewLabel.text = model.firstScreenText
         initialView.isHidden = model.firstScreenText == nil
