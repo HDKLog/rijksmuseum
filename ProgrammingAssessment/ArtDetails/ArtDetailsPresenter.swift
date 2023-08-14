@@ -22,7 +22,7 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
     }
 
     func loadArt(artId: String) {
-        interactor.laodArtDetails(artId: artId) { result in
+        interactor.loadArtDetails(artId: artId) { result in
             switch result {
             case let .success(artDetails):
                 let model = ArtDetailsViewModel.ArtDetails(title: artDetails.title)

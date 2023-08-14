@@ -45,7 +45,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let service = Service()
         let sut = makeSut(service: service)
 
-        sut.laodArtDetails(artId: "id"){_ in }
+        sut.loadArtDetails(artId: "id"){_ in }
 
         XCTAssertTrue(service.getDataCalled)
     }
@@ -59,7 +59,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
         let sut = makeSut(service: service)
 
-        sut.laodArtDetails(artId: artId) {_ in }
+        sut.loadArtDetails(artId: artId) {_ in }
 
         XCTAssertEqual(serviceQuery?.getUrl()?.lastPathComponent, artId)
     }
@@ -74,7 +74,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.laodArtDetails(artId: "id") {
+        sut.loadArtDetails(artId: "id") {
             result = $0
             expectation.fulfill()
         }
@@ -93,7 +93,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.laodArtDetails(artId: "id") {
+        sut.loadArtDetails(artId: "id") {
             result = $0
             expectation.fulfill()
         }

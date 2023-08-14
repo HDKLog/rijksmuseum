@@ -24,7 +24,7 @@ typealias ArtDetailsImageLoadingResultHandler = (CollectionImageLoadingResult) -
 
 protocol ArtDetailsInteracting {
 
-    func laodArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler)
+    func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler)
     func loadCollectionItemImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler)
 }
 
@@ -36,7 +36,7 @@ class ArtDetailsInteractor: ArtDetailsInteracting {
         self.service = service
     }
 
-    func laodArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+    func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
         let query = RijksmuseumServiceQuery(request: .collection(artId))
 
         service.getData(query: query) { result in
