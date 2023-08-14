@@ -293,33 +293,27 @@ final class CollectionViewControllerTest: XCTestCase {
 
 
     func test_viewController_onMultipleDisplayLastCell_afterLoadtellPresenterToLoadNextPageOnce() {
-        var completions: [(CollectionViewCellModel) ->Void] = []
         let presenter = Presenter()
         presenter.itemModelClosure = {_, _, completion in
-            completions.append(completion)
+            completion(CollectionViewCellModel(imageData: Data(), title: ""))
         }
         let sut = makeSut(presenter: presenter)
 
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
-
-        completions.forEach { $0(CollectionViewCellModel(imageData: Data(), title: "")) }
 
         XCTAssertEqual(presenter.loadNextPageCalls, 1)
 
     }
 
     func test_viewController_onSelectCell_tellPresenterToChooseCell() {
-        var completions: [(CollectionViewCellModel) ->Void] = []
         let presenter = Presenter()
         presenter.itemModelClosure = {_, _, completion in
-            completions.append(completion)
+            completion(CollectionViewCellModel(imageData: Data(), title: ""))
         }
         let sut = makeSut(presenter: presenter)
 
         sut.collectionView.delegate?.collectionView?(sut.collectionView, didSelectItemAt: sut.lastIndexPath)
-
-        completions.forEach { $0(CollectionViewCellModel(imageData: Data(), title: "")) }
 
         XCTAssertTrue(presenter.chooseItemCalled)
 
