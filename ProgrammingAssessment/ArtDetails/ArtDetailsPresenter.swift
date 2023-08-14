@@ -4,6 +4,7 @@ protocol ArtDetailsPresenting {
 
     func loadView()
     func loadArt(artId: String)
+    func routBack()
 
 }
 
@@ -31,5 +32,9 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
                 print(error)
             }
         }
+    }
+
+    func routBack() {
+        router?.routeToCollection()
     }
 }

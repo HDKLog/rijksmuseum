@@ -127,4 +127,17 @@ class ArtDetailsPresenterTest: XCTestCase {
 
         XCTAssertEqual(loadedId, loadedId)
     }
+
+    func test_artDetailsPresenter_onRoutBack_tellsRouterRouteToCollection() {
+
+        let view = View()
+        let interactor = Interactor()
+        let router = Router()
+
+        let sut = makeSut(view: view, interactor: interactor, router: router)
+
+        sut.routBack()
+
+        XCTAssertTrue(router.routeToCollectionCalled)
+    }
 }

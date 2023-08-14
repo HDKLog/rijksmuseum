@@ -41,10 +41,21 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
     }
 
     func configure(with model: ArtDetailsViewModel.InitialInfo) {
-        self.navigationItem.backBarButtonItem?.title = model.backButtonTitle
+        navigationItem.setHidesBackButton(true, animated: false)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "◀︎ \(model.backButtonTitle)",
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(backToCollection))
+        
+
     }
 
     func updateDetails(with model: ArtDetailsViewModel.ArtDetails) {
 
+    }
+
+    @objc
+    func backToCollection(sender: AnyObject) {
+        presenter?.routBack()
     }
 }

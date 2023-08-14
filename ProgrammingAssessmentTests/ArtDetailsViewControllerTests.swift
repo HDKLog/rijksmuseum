@@ -20,6 +20,14 @@ class ArtDetailsViewControllerTests: XCTestCase {
             loadArtCalls += 1
             loadArtClosure(artId)
         }
+
+        var routBackCalled: Bool { routBackCalls > 0 }
+        var routBackCalls: Int = 0
+        var routBackClosure:() -> Void = { }
+        func routBack() {
+            routBackCalls += 1
+            routBackClosure()
+        }
     }
 
     func makeSut(presenter: ArtDetailsPresenting? = nil) -> ArtDetailsViewController {
@@ -37,6 +45,17 @@ class ArtDetailsViewControllerTests: XCTestCase {
         XCTAssertTrue(presenter.loadViewCalled)
     }
 
+    func test_viewController_onBackButtonTap_tellPresenterToRoutBack() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
 
+        sut.loadViewIfNeeded()
+        sut.configure(with: ArtDetailsViewModel.InitialInfo(backButtonTitle: "Title"))
+        let item = sut.navigationItem.leftBarButtonItem
+
+        _ = item?.target?.perform(item?.action, with: nil)
+
+        XCTAssertTrue(presenter.routBackCalled)
+    }
 
 }
