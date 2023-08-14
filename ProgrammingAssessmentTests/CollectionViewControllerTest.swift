@@ -309,7 +309,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
     }
 
-    func test_viewController_onSellectCell_tellPresenterToChooseCell() {
+    func test_viewController_onSelectCell_tellPresenterToChooseCell() {
         var completions: [(CollectionViewCellModel) ->Void] = []
         let presenter = Presenter()
         presenter.itemModelClosure = {_, _, completion in

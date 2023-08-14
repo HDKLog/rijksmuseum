@@ -51,6 +51,17 @@ final class CollectionPresenterTest: XCTestCase {
         }
     }
 
+    class Router: CollectionRouting {
+
+        var routeToArtDetailCalled: Bool { routeToArtDetailCalls > 0 }
+        var routeToArtDetailCalls: Int = 0
+        var routeToArtDetailClosure: (String) -> Void = {_ in }
+        func routeToArtDetail(ardId: String) {
+            routeToArtDetailCalls += 1
+            routeToArtDetailClosure(ardId)
+        }
+    }
+
     func makeSut(view: CollectionView, interactor: CollectionInteracting, router: CollectionRouting? = nil) -> CollectionPresenter {
         let presenter = CollectionPresenter(view: view, interactor: interactor)
         presenter.router = router
@@ -146,9 +157,10 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         let numberOfItems = 3
+        let mockedResult: CollectionPage = .mocked(itemsCount: numberOfItems)
         var loadedModel: CollectionViewCellModel?
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: numberOfItems)))
+            completion(.success(mockedResult))
         }
         interactor.loadCollectionItemImageDataClosure = { url, scale, complition in
             complition(.success(Data()))
@@ -161,7 +173,7 @@ final class CollectionPresenterTest: XCTestCase {
             loadedModel = model
         }
 
-        XCTAssertEqual(loadedModel, CollectionViewCellModel(imageData: Data(), title: ""))
+        XCTAssertEqual(loadedModel, CollectionViewCellModel(imageData: Data(), title: mockedResult.items[0].title))
     }
 
     func test_collectionPresenter_onHeaderModel_returnsHeaderModel() {
@@ -199,15 +211,56 @@ final class CollectionPresenterTest: XCTestCase {
 
         XCTAssertTrue(view.displayErrorCalled)
     }
+
+    func test_onChooseItem_routToItem() {
+        let numberOfItems = 3
+        let view = View()
+        let interactor = Interactor()
+        let router = Router()
+        let sut = makeSut(view: view, interactor: interactor, router: router)
+
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked(itemsCount: numberOfItems)))
+        }
+
+        sut.loadCollection()
+
+        sut.chooseItem(itemIndex: 0, on: 0)
+
+        XCTAssertTrue(router.routeToArtDetailCalled)
+    }
+
+    func test_onChooseItem_routToItemWithItemId() {
+        let numberOfItems = 3
+        var routingItemId: String?
+        let view = View()
+        let interactor = Interactor()
+        let router = Router()
+        let sut = makeSut(view: view, interactor: interactor, router: router)
+
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked(itemsCount: numberOfItems)))
+        }
+
+        router.routeToArtDetailClosure = { id in
+            routingItemId = id
+        }
+
+        sut.loadCollection()
+
+        sut.chooseItem(itemIndex: 0, on: 0)
+
+        XCTAssertEqual(routingItemId, sut.collectionPages[0].items[0].id)
+    }
 }
 
 extension CollectionPage {
     static func mocked(itemsCount: Int) -> CollectionPage {
         let image = CollectionPage.CollectionItem.Image(guid: "", width: 0, height: 0, url: URL(string: "https://www.google.com/"))
         let item = CollectionPage.CollectionItem(
-            id: "",
-            title: "",
-            description: "",
+            id: "id",
+            title: "title",
+            description: "desc",
             webImage: image,
             headerImage: image
             )
