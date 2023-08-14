@@ -31,6 +31,7 @@ final class CollectionPresenterTest: XCTestCase {
 
     class Interactor: CollectionInteracting {
 
+
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
         var loadCollectionClosure: (Int, Int, @escaping CollectionLoadingResultHandler) -> Void = { _, _, _ in }
@@ -41,10 +42,12 @@ final class CollectionPresenterTest: XCTestCase {
 
         var loadCollectionItemImageDataCalled: Bool { loadCollectionItemImageDataCalls > 0 }
         var loadCollectionItemImageDataCalls: Int = 0
-        var loadCollectionItemImageDataClosure: (URL, @escaping CollectionImageLoadingResultHandler) -> Void = { _, _ in }
-        func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+        var loadCollectionItemImageDataClosure: (URL, CollectionImageLoadingScale, @escaping CollectionImageLoadingResultHandler) -> Void = { _, _, _ in }
+        func loadCollectionItemImageData(from url: URL,
+                                         scale: ProgrammingAssessment.CollectionImageLoadingScale,
+                                         completion: @escaping CollectionImageLoadingResultHandler) {
             loadCollectionItemImageDataCalls += 1
-            loadCollectionItemImageDataClosure(url, completion)
+            loadCollectionItemImageDataClosure(url, scale, completion)
         }
     }
 
@@ -147,7 +150,7 @@ final class CollectionPresenterTest: XCTestCase {
         interactor.loadCollectionClosure = { _, _, completion in
             completion(.success(.mocked(itemsCount: numberOfItems)))
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
+        interactor.loadCollectionItemImageDataClosure = { url, scale, complition in
             complition(.success(Data()))
         }
         let sut = makeSut(view: view, interactor: interactor)
@@ -169,7 +172,7 @@ final class CollectionPresenterTest: XCTestCase {
         interactor.loadCollectionClosure = { _, _, completion in
             completion(.success(.mocked(itemsCount: numberOfItems)))
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
+        interactor.loadCollectionItemImageDataClosure = { url, scale, complition in
             complition(.success(Data()))
         }
         let sut = makeSut(view: view, interactor: interactor)
@@ -188,7 +191,7 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         interactor.loadCollectionClosure = {_, _, completion in
-            completion(.failure(error))
+            completion(.failure(.serviceError(.requestError(error))))
         }
         let sut = makeSut(view: view, interactor: interactor)
 

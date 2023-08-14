@@ -8,12 +8,20 @@ enum CollectionLoadingError: Error {
 typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>
 typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
 
+enum CollectionImageLoadingScale: Int {
+    case original = 0
+    case thumbnail = 400
+}
+
 typealias CollectionImageLoadingResult = Result<Data, Error>
 typealias CollectionImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
 
 protocol CollectionInteracting {
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler)
-    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler)
+    func loadCollectionItemImageData(from url: URL,
+                                     scale: CollectionImageLoadingScale,
+                                     completion: @escaping CollectionImageLoadingResultHandler
+    )
 }
 
 class CollectionInteractor: CollectionInteracting {
@@ -51,11 +59,13 @@ class CollectionInteractor: CollectionInteracting {
         }
     }
 
-    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+    func loadCollectionItemImageData(from url: URL,
+                                     scale: CollectionImageLoadingScale,
+                                     completion: @escaping CollectionImageLoadingResultHandler) {
 
         var urlString = url.absoluteString
         urlString.removeLast()
-        let query = RijksmuseumImageQuery(url: urlString).withScale(scale: 400)
+        let query = RijksmuseumImageQuery(url: urlString).withScale(scale: scale.rawValue)
         service.getData(query: query) { result in
             DispatchQueue.main.async {
                 switch result {
