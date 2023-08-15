@@ -10,7 +10,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
 
         let artDetailsViewController = createArtDetails()
-        let collectionViewController = createCollection(artDetailViewController: artDetailsViewController)
+        let collectionViewController = createCollection(endView: artDetailsViewController, routingEndpoint: artDetailsViewController)
 
         window?.rootViewController = UINavigationController(rootViewController: collectionViewController)
         window?.makeKeyAndVisible()

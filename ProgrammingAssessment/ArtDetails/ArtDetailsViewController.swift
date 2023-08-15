@@ -15,7 +15,6 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.isSkeletonable = true
         return imageView
     }()
 
@@ -114,6 +113,8 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
     }
 
     private func setupAnimation() {
+        contentView.isSkeletonable = true
+
         titleLabel.skeletonTextNumberOfLines = .custom(1)
         titleLabel.lastLineFillPercent = 70
         titleLabel.isSkeletonable = true
@@ -155,4 +156,14 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
     func backToCollection(sender: AnyObject) {
         presenter?.routBack()
     }
+}
+
+extension ArtDetailsViewController: CollectionRoutingEndpoint {
+    var collectionView: UIViewController { self }
+
+    func loadArtDetail(ardId: String) {
+        presenter?.loadArt(artId: ardId)
+    }
+
+
 }
