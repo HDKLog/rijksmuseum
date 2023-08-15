@@ -14,38 +14,6 @@ final class CollectionInteractorTest: XCTestCase {
         }
     }
 
-    var collectionInfor: CollectionInfo {
-        let image = CollectionInfo.Art.ImageInfo(
-            guid: "guid",
-            offsetPercentageX: 0,
-            offsetPercentageY: 1,
-            width: 2500,
-            height: 2034,
-            url: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0")
-        let arts = Array(repeating: CollectionInfo.Art(links: ["String" : "String"],
-                                                       id: "id",
-                                                       objectNumber: "Number",
-                                                       title: "Title",
-                                                       hasImage: true,
-                                                       principalOrFirstMaker: "Principal",
-                                                       longTitle: "00",
-                                                       showImage: true,
-                                                       permitDownload: true,
-                                                       webImage: image,
-                                                       headerImage: image,
-                                                       productionPlaces: ["Place"]),
-                         count: 3)
-
-        return CollectionInfo(
-            elapsedMilliseconds: 0,
-            count: UInt64(arts.count),
-            artObjects: arts)
-    }
-
-    var collectionPage: CollectionPage {
-        return CollectionPage(title: "Page 0", items: collectionInfor.collectionItems)
-    }
-
     func makeSut(service: ServiceLoading) -> CollectionInteractor {
         CollectionInteractor(service: service)
     }
@@ -88,7 +56,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_collectionInteractor_onLoadCollection_onSuccessGivesCollectionPage() {
-        let collectionData = try! JSONEncoder().encode(collectionInfor)
+        let collectionData = try! JSONEncoder().encode(CollectionInfo.mocked)
         var collectionPageResult: CollectionLoadingResult?
         let service = Service()
         service.getDataClosure = { query, completion in
@@ -103,7 +71,7 @@ final class CollectionInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(collectionPageResult, .success(collectionPage))
+        XCTAssertEqual(collectionPageResult, .success(.mocked))
     }
 
     func test_collectionInteractor_onLoadCollection_onFailureGivesError() {
@@ -198,6 +166,36 @@ final class CollectionInteractorTest: XCTestCase {
         wait(for: [expectation], timeout: 2)
 
         XCTAssertEqual(loadedImageResult, .failure(.serviceError(error)))
+    }
+}
+
+extension CollectionInfo {
+    static var mocked: CollectionInfo {
+        let image = CollectionInfo.Art.ImageInfo(
+            guid: "bbd1fae8-4023-4859-8ed1-d38616aec96c",
+            offsetPercentageX: 0,
+            offsetPercentageY: 1,
+            width: 5656,
+            height: 4704,
+            url: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0")
+        let arts = Array(repeating: CollectionInfo.Art(links: ["String" : "String"],
+                                                       id: "en-SK-C-5",
+                                                       objectNumber: "SK-C-5",
+                                                       title: "The Night Watch",
+                                                       hasImage: true,
+                                                       principalOrFirstMaker: "Principal",
+                                                       longTitle: "The Night Watch, Rembrandt van Rijn, 1642",
+                                                       showImage: true,
+                                                       permitDownload: true,
+                                                       webImage: image,
+                                                       headerImage: image,
+                                                       productionPlaces: ["Place"]),
+                         count: 3)
+
+        return CollectionInfo(
+            elapsedMilliseconds: 0,
+            count: UInt64(arts.count),
+            artObjects: arts)
     }
 }
 

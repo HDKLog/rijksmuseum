@@ -130,7 +130,7 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: 1)))
+            completion(.success(.mocked))
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -142,22 +142,20 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onNumberOfItems_returnsNumberOfItemsPages() {
         let view = View()
         let interactor = Interactor()
-        let numberOfItems = 3
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: numberOfItems)))
+            completion(.success(.mocked))
         }
         let sut = makeSut(view: view, interactor: interactor)
 
         sut.loadCollection()
 
-        XCTAssertEqual(sut.numberOfItems(on: 0), numberOfItems)
+        XCTAssertEqual(sut.numberOfItems(on: 0), CollectionPage.mocked.items.count)
     }
 
     func test_collectionPresenter_onItemModel_returnsItemModel() {
         let view = View()
         let interactor = Interactor()
-        let numberOfItems = 3
-        let mockedResult: CollectionPage = .mocked(itemsCount: numberOfItems)
+        let mockedResult: CollectionPage = .mocked
         var loadedModel: CollectionViewCellModel?
         interactor.loadCollectionClosure = { _, _, completion in
             completion(.success(mockedResult))
@@ -179,10 +177,9 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onHeaderModel_returnsHeaderModel() {
         let view = View()
         let interactor = Interactor()
-        let numberOfItems = 3
         var loadedModel: CollectionViewHeaderModel?
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: numberOfItems)))
+            completion(.success(.mocked))
         }
         interactor.loadCollectionItemImageDataClosure = { url, scale, complition in
             complition(.success(Data()))
@@ -195,7 +192,7 @@ final class CollectionPresenterTest: XCTestCase {
             loadedModel = model
         }
 
-        XCTAssertEqual(loadedModel, CollectionViewHeaderModel(title: "Page 1"))
+        XCTAssertEqual(loadedModel, .mocked)
     }
 
     func test_collectionPresenter_onLoadCollectionError_presentErrorInView() {
@@ -213,14 +210,13 @@ final class CollectionPresenterTest: XCTestCase {
     }
 
     func test_onChooseItem_routToItem() {
-        let numberOfItems = 3
         let view = View()
         let interactor = Interactor()
         let router = Router()
         let sut = makeSut(view: view, interactor: interactor, router: router)
 
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: numberOfItems)))
+            completion(.success(.mocked))
         }
 
         sut.loadCollection()
@@ -231,7 +227,6 @@ final class CollectionPresenterTest: XCTestCase {
     }
 
     func test_onChooseItem_routToItemWithItemId() {
-        let numberOfItems = 3
         var routingItemId: String?
         let view = View()
         let interactor = Interactor()
@@ -239,7 +234,7 @@ final class CollectionPresenterTest: XCTestCase {
         let sut = makeSut(view: view, interactor: interactor, router: router)
 
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked(itemsCount: numberOfItems)))
+            completion(.success(.mocked))
         }
 
         router.routeToArtDetailClosure = { id in
@@ -255,7 +250,7 @@ final class CollectionPresenterTest: XCTestCase {
 }
 
 extension CollectionPage {
-    static func mocked(itemsCount: Int) -> CollectionPage {
+    static var mocked: CollectionPage {
         let image = CollectionPage.CollectionItem.Image(
             guid: "bbd1fae8-4023-4859-8ed1-d38616aec96c",
             width: 5656,
@@ -268,8 +263,8 @@ extension CollectionPage {
             webImage: image,
             headerImage: image
             )
-        let items = Array(repeating: item, count: itemsCount)
-        return CollectionPage(title: "Page 1", items: items)
+        let items = Array(repeating: item, count: 3)
+        return CollectionPage(title: "Page 0", items: items)
     }
 }
 

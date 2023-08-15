@@ -352,6 +352,6 @@ extension CollectionViewCellModel {
 
 extension CollectionViewHeaderModel {
     static var mocked: CollectionViewHeaderModel {
-        CollectionViewHeaderModel(title: "Title")
+        CollectionViewHeaderModel(title: "Page 0")
     }
 }
