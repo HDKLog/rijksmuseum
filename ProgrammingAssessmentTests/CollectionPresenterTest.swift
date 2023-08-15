@@ -10,6 +10,7 @@ final class CollectionPresenterTest: XCTestCase {
         var configureClosure: (CollectionViewModel) -> Void = {_ in }
         func configure(with model: CollectionViewModel) {
             configureCalls += 1
+            configureClosure(model)
         }
 
         var updateCollectionCalled: Bool { updateCollectionCalls > 0 }
@@ -100,7 +101,63 @@ final class CollectionPresenterTest: XCTestCase {
         XCTAssertEqual(loadedPage, 1)
     }
 
-    func test_collectionPresenter_onloadNextPage_tellsInteractorToLoadNextPage() {
+    func test_collectionPresenter_onLoadCollection_onLoadingSuccessIncreaseCurrentPageOnce() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            loadedPage = page
+            completion(.success(.mocked))
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertEqual(sut.currentPage, loadedPage! + 1)
+    }
+
+    func test_collectionPresenter_onLoadCollection_onLoadingSuccessTellsViewToUpdateCollectionOnce() {
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked))
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertEqual(view.updateCollectionCalls, 1)
+    }
+
+    func test_collectionPresenter_onLoadCollection_onLoadingFailureDoNotIncreaseCurrentPage() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            loadedPage = page
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertEqual(sut.currentPage, loadedPage)
+    }
+
+    func test_collectionPresenter_onLoadCollection_onLoadingFailureTellsViewToDisplayError() {
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertTrue(view.displayErrorCalled)
+    }
+
+    func test_collectionPresenter_onLoadNextPage_tellsInteractorToLoadNextPage() {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
@@ -110,11 +167,63 @@ final class CollectionPresenterTest: XCTestCase {
         }
         let sut = makeSut(view: view, interactor: interactor)
 
-        sut.loadCollection()
+        let firstPage = sut.currentPage
         sut.loadNextPage()
 
-        XCTAssertEqual(loadedPage, 2)
+        XCTAssertEqual(loadedPage, firstPage)
     }
+
+    func test_collectionPresenter_onLoadNextPage_onLoadingSuccessIncreaseCurrentPageOnce() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            loadedPage = page
+            completion(.success(.mocked))
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        XCTAssertEqual(sut.currentPage, loadedPage! + 1)
+    }
+
+    func test_collectionPresenter_onLoadNextPage_onLoadingFailureDoNotIncreaseCurrentPage() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            if loadedPage == nil {
+                loadedPage = page
+                completion(.failure(.serviceError(.invalidQuery)))
+                return
+            }
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        XCTAssertEqual(sut.currentPage, loadedPage)
+    }
+
+    func test_collectionPresenter_onLoadNextPage_onLoadingFailureTellsViewToDisplayError() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            if loadedPage == nil {
+                loadedPage = page
+                completion(.failure(.serviceError(.invalidQuery)))
+                return
+            }
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        XCTAssertTrue(view.displayErrorCalled)
+    }
+    
 
     func test_collectionPresenter_onLoadCollection_configureView() {
         let view = View()
@@ -193,20 +302,6 @@ final class CollectionPresenterTest: XCTestCase {
         }
 
         XCTAssertEqual(loadedModel, .mocked)
-    }
-
-    func test_collectionPresenter_onLoadCollectionError_presentErrorInView() {
-        let error: Error = NSError(domain: "", code: 0)
-        let view = View()
-        let interactor = Interactor()
-        interactor.loadCollectionClosure = {_, _, completion in
-            completion(.failure(.serviceError(.requestError(error))))
-        }
-        let sut = makeSut(view: view, interactor: interactor)
-
-        sut.loadCollection()
-
-        XCTAssertTrue(view.displayErrorCalled)
     }
 
     func test_onChooseItem_routToItem() {

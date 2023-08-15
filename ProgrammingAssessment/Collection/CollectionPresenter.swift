@@ -40,7 +40,7 @@ class CollectionPresenter: CollectionPresenting {
                 self?.view.updateCollection()
                 self?.currentPage += 1
             case let .failure(error):
-                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Error"))
+                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load"))
                 self?.view.displayError(error: error)
             }
         }
