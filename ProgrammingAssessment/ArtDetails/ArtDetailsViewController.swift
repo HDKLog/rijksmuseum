@@ -21,7 +21,9 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
 
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.medium)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.font = UIFont.boldSystemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.large)
         return label
     }()
 
@@ -29,7 +31,7 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
         let label = UILabel()
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.small)
+        label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.medium)
         return label
     }()
 

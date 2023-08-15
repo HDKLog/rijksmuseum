@@ -146,9 +146,6 @@ class CollectionViewController: UIViewController, CollectionView {
 }
 
 extension CollectionViewController: UICollectionViewDataSource {
-    func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> SkeletonView.ReusableCellIdentifier {
-        CollectionViewCell.resuableId
-    }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         presenter?.numberOfItems(on: section) ?? 0
