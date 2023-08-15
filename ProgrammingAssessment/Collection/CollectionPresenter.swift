@@ -63,12 +63,13 @@ class CollectionPresenter: CollectionPresenting {
             return
         }
         
-        interactor.loadCollectionItemImageData(from: url, scale: .thumbnail) { result in
+        interactor.loadCollectionItemImageData(from: url, scale: .thumbnail) {[weak self] result in
             switch result {
             case let .success(data):
                 completion(CollectionViewCellModel(imageData: data, title: item.title))
             case let .failure(error):
                 print(error)
+                self?.tryToReloadItemModel(on: page, at: index, completion: completion)
             }
         }
     }
@@ -91,8 +92,16 @@ class CollectionPresenter: CollectionPresenting {
                 self?.currentPage += 1
             case let .failure(error):
                 self?.view.displayError(error: error)
+                self?.tryToReloadNewxtPage()
             }
         }
     }
 
+    private func tryToReloadNewxtPage() {
+        loadNextPage()
+    }
+
+    private func tryToReloadItemModel(on: Int, at:Int, completion: @escaping (CollectionViewCellModel) -> Void) {
+        itemModel(on: on, at:at, completion: completion)
+    }
 }

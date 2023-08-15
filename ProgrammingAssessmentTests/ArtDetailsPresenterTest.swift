@@ -144,7 +144,66 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertEqual(loadedId, loadedId)
     }
 
-    func test_artDetailsPresenter_onLoadArt_loadsArtDetailsSuccessLoadImage() {
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessTellsViewToUpdateDetails() {
+
+        let artId = "artId"
+        let artDetails = ArtDetails.mocked
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(artDetails))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertTrue(view.updateDetailsCalled)
+    }
+
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessTellsViewToUpdateDetailsOnce() {
+
+        let artId = "artId"
+        let artDetails = ArtDetails.mocked
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(artDetails))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertEqual(view.updateDetailsCalls, 1)
+    }
+
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessTellsViewToUpdateDetailsWithModel() {
+
+        let artId = "artId"
+        let artDetails = ArtDetails.mocked
+        var loadedModel:ArtDetailsViewModel.ArtDetails?
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(artDetails))
+        }
+
+        view.updateDetailsClosure = { model in
+            loadedModel = model
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertEqual(loadedModel, artDetails.artDetailsViewModel)
+    }
+
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessLoadsImage() {
 
         let artId = "artId"
         let artDetails = ArtDetails.mocked
@@ -160,6 +219,33 @@ class ArtDetailsPresenterTest: XCTestCase {
         sut.loadArt(artId: artId)
 
         XCTAssertTrue(interactor.loadArtDetailsImageDataCalled)
+    }
+
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessWithLoadsImageSuccessUpdateViewImage() {
+
+        let artId = "artId"
+        let artDetails = ArtDetails.mocked
+        let imageData = UIImage.init(systemName: "heart.fill")!.pngData()!
+        var loadedImageData: Data?
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(artDetails))
+        }
+        interactor.loadArtDetailsImageDataClosure = {_, completion in
+            completion(.success(imageData))
+        }
+
+        view.updateImageClosure = { data in
+            loadedImageData = data
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertEqual(loadedImageData, imageData)
     }
 
     func test_artDetailsPresenter_onRoutBack_tellsRouterRouteToCollection() {
@@ -180,5 +266,12 @@ extension ArtDetails {
     static var mocked: ArtDetails {
         let image = ArtDetails.Image(guid: "", width: 0, height: 0, url: URL(string: "https://www.google.com/"))
         return ArtDetails(id: "", title: "", description: "", webImage: image)
+    }
+}
+
+extension ArtDetailsViewModel.ArtDetails: Equatable {
+    public static func == (lhs: ArtDetailsViewModel.ArtDetails, rhs: ArtDetailsViewModel.ArtDetails) -> Bool {
+        lhs.title == rhs.title &&
+        lhs.description == rhs.description
     }
 }

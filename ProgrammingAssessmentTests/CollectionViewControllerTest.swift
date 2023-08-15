@@ -16,8 +16,10 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
+        var loadCollectionClosure: () -> Void = { }
         func loadCollection() {
             loadCollectionCalls += 1
+            loadCollectionClosure()
         }
 
 
@@ -55,8 +57,10 @@ final class CollectionViewControllerTest: XCTestCase {
 
         var loadNextPageCalled: Bool { loadNextPageCalls > 0 }
         var loadNextPageCalls: Int = 0
+        var loadNextPageClosure: () -> Void = { }
         func loadNextPage() {
             loadNextPageCalls += 1
+            loadNextPageClosure()
         }
     }
 
@@ -282,15 +286,17 @@ final class CollectionViewControllerTest: XCTestCase {
 
     func test_viewController_onDisplayLastCell_tellPresenterToLoadNextPage() {
         let presenter = Presenter()
-
         presenter.itemModelClosure = {_, _, completion in
             completion(.mocked)
         }
+        let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
+        presenter.loadCollectionClosure = { expectation.fulfill() }
         let sut = makeSut(presenter: presenter)
 
         sut.loadViewIfNeeded()
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
 
+        wait(for: [expectation], timeout: 2)
         XCTAssertTrue(presenter.loadNextPageCalled)
 
     }
@@ -311,11 +317,15 @@ final class CollectionViewControllerTest: XCTestCase {
         presenter.itemModelClosure = {_, _, completion in
             completion(.mocked)
         }
+        let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
+        presenter.loadCollectionClosure = { expectation.fulfill() }
         let sut = makeSut(presenter: presenter)
 
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
 
+
+        wait(for: [expectation], timeout: 2)
         XCTAssertEqual(presenter.loadNextPageCalls, 1)
 
     }

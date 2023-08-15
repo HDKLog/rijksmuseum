@@ -256,11 +256,15 @@ final class CollectionPresenterTest: XCTestCase {
 
 extension CollectionPage {
     static func mocked(itemsCount: Int) -> CollectionPage {
-        let image = CollectionPage.CollectionItem.Image(guid: "", width: 0, height: 0, url: URL(string: "https://www.google.com/"))
+        let image = CollectionPage.CollectionItem.Image(
+            guid: "bbd1fae8-4023-4859-8ed1-d38616aec96c",
+            width: 5656,
+            height: 4704,
+            url: URL(string: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"))
         let item = CollectionPage.CollectionItem(
-            id: "id",
-            title: "title",
-            description: "desc",
+            id: "SK-C-5",
+            title: "The Night Watch",
+            description: "The Night Watch, Rembrandt van Rijn, 1642",
             webImage: image,
             headerImage: image
             )
