@@ -6,7 +6,7 @@ enum CollectionLoadingError: Error {
 }
 
 enum CollectionImageLoadingError: Error {
-    case serviceError(Error)
+    case serviceError(ServiceLoadingError)
 }
 
 typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>

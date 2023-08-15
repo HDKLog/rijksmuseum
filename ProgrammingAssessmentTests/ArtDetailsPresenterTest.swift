@@ -203,6 +203,23 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertEqual(loadedModel, artDetails.artDetailsViewModel)
     }
 
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsFailureTellsViewToDisplayError() {
+
+        let artId = "artId"
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertTrue(view.displayErrorCalled)
+    }
+
     func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessLoadsImage() {
 
         let artId = "artId"
@@ -246,6 +263,27 @@ class ArtDetailsPresenterTest: XCTestCase {
         sut.loadArt(artId: artId)
 
         XCTAssertEqual(loadedImageData, imageData)
+    }
+
+    func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessAndLoadsImageFailureTellsViewToDisplayError() {
+
+        let artId = "artId"
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(.mocked))
+        }
+
+        interactor.loadArtDetailsImageDataClosure = { _, completion in
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertTrue(view.displayErrorCalled)
     }
 
     func test_artDetailsPresenter_onRoutBack_tellsRouterRouteToCollection() {

@@ -121,7 +121,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
         let url = URL(string:urlString)!
         let imageData = Data(count: 2)
-        var loadedImageResult: CollectionImageLoadingResult?
+        var loadedImageResult: ArtDetailsImageLoadingResult?
         let service = Service()
         service.getDataClosure = { query, completion in
             completion(.success(imageData))
@@ -142,7 +142,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
         let url = URL(string:urlString)!
         let error = ServiceLoadingError.invalidQuery
-        var loadedImageResult: CollectionImageLoadingResult?
+        var loadedImageResult: ArtDetailsImageLoadingResult?
         let service = Service()
         service.getDataClosure = { query, completion in
             completion(.failure(error))

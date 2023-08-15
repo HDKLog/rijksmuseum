@@ -261,7 +261,7 @@ final class CollectionPresenterTest: XCTestCase {
         XCTAssertEqual(sut.numberOfItems(on: 0), CollectionPage.mocked.items.count)
     }
 
-    func test_collectionPresenter_onItemModel_returnsItemModel() {
+    func test_collectionPresenter_onItemModel_onSuccessReturnsItemModel() {
         let view = View()
         let interactor = Interactor()
         let mockedResult: CollectionPage = .mocked
@@ -281,6 +281,28 @@ final class CollectionPresenterTest: XCTestCase {
         }
 
         XCTAssertEqual(loadedModel, CollectionViewCellModel(imageData: Data(), title: mockedResult.items[0].title))
+    }
+
+    func test_collectionPresenter_onItemModel_onFailureTellsViewToDisplayError() {
+        let view = View()
+        let interactor = Interactor()
+        var loadingUrl: URL?
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked))
+        }
+        interactor.loadCollectionItemImageDataClosure = { url, scale, complition in
+            if loadingUrl == nil {
+                loadingUrl = url
+                complition(.failure(.serviceError(.invalidQuery)))
+            }
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        sut.itemModel(on: 0, at: 0) { _ in }
+
+        XCTAssertTrue(view.displayErrorCalled)
     }
 
     func test_collectionPresenter_onHeaderModel_returnsHeaderModel() {

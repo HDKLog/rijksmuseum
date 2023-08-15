@@ -68,7 +68,7 @@ class CollectionPresenter: CollectionPresenting {
             case let .success(data):
                 completion(CollectionViewCellModel(imageData: data, title: item.title))
             case let .failure(error):
-                print(error)
+                self?.view.displayError(error: error)
                 self?.tryToReloadItemModel(on: page, at: index, completion: completion)
             }
         }

@@ -16,11 +16,11 @@ typealias ArtDetailsLoadingResult = Result<ArtDetails, ArtDetailsLoadingError>
 typealias ArtDetailsLoadingResultHandler = (ArtDetailsLoadingResult) -> Void
 
 enum ArtDetailsImageLoadingError: Error {
-    case serviceError(Error)
+    case serviceError(ServiceLoadingError)
 }
 
 typealias ArtDetailsImageLoadingResult = Result<Data, ArtDetailsImageLoadingError>
-typealias ArtDetailsImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
+typealias ArtDetailsImageLoadingResultHandler = (ArtDetailsImageLoadingResult) -> Void
 
 protocol ArtDetailsInteracting {
 
