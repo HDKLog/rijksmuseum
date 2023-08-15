@@ -221,9 +221,6 @@ extension CollectionViewController: UICollectionViewDataSource {
 extension CollectionViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let lastSection = collectionView.numberOfSections-1
-        let lastSectionLastItem = collectionView.numberOfItems(inSection: lastSection) - 1
-        let lastIndexPath = IndexPath(row: max(lastSectionLastItem, 0), section: max(lastSection, 0))
         if indexPath == lastIndexPath, !loadingNextPage {
             loadingNextPage = true
             DispatchQueue.global().async {

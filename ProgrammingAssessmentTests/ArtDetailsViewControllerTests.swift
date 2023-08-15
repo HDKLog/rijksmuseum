@@ -76,8 +76,7 @@ class ArtDetailsViewControllerTests: XCTestCase {
     }
 
     func test_viewController_updateImage_setsImageToImageView() {
-        let base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
-        let data = Data(base64Encoded: base64.data(using: .utf8)!)!
+        let data = UIImage.init(systemName: "heart.fill")!.pngData()!
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 

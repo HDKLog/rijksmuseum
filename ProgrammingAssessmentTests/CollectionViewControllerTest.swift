@@ -224,12 +224,11 @@ final class CollectionViewControllerTest: XCTestCase {
     }
 
     func test_viewController_onLoadCell_setImageforCell() {
-        let image = UIImage.init(systemName: "heart.fill")!
         var numberOfPages = 0
         let indexPath = IndexPath(row: 0, section: 0)
         let presenter = Presenter()
         presenter.itemModelClosure = {page, item, completion in
-            completion(CollectionViewCellModel(imageData: image.pngData()!, title: ""))
+            completion(.mocked)
         }
         presenter.numberOfPagesClosure = {
             numberOfPages += 1
@@ -244,12 +243,11 @@ final class CollectionViewControllerTest: XCTestCase {
     }
 
     func test_viewController_onLoadCell_setDescription() {
-        let description = "Description"
         var numberOfPages = 0
         let indexPath = IndexPath(row: 0, section: 0)
         let presenter = Presenter()
         presenter.itemModelClosure = {page, item, completion in
-            completion(CollectionViewCellModel(imageData: Data(), title: description))
+            completion(.mocked)
         }
         presenter.numberOfPagesClosure = {
             numberOfPages += 1
@@ -260,16 +258,15 @@ final class CollectionViewControllerTest: XCTestCase {
         sut.updateCollection()
         let cell = sut.collectionView.dataSource?.collectionView(sut.collectionView, cellForItemAt: indexPath) as? CollectionViewCell
 
-        XCTAssertEqual( cell?.descriptionLabel.text, description)
+        XCTAssertEqual( cell?.descriptionLabel.text, CollectionViewCellModel.mocked.title)
     }
 
     func test_viewController_onLoadHeader_setHeaderTitle() {
-        let title = "Title"
         var numberOfPages = 0
         let indexPath = IndexPath(row: 0, section: 0)
         let presenter = Presenter()
         presenter.headerModelClosure = {page, completion in
-            completion(CollectionViewHeaderModel(title: title))
+            completion(.mocked)
         }
         presenter.numberOfPagesClosure = {
             numberOfPages += 1
@@ -280,16 +277,18 @@ final class CollectionViewControllerTest: XCTestCase {
         sut.updateCollection()
         let header = sut.collectionView.dataSource?.collectionView?(sut.collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath) as? CollectionViewHeader
 
-        XCTAssertEqual( header?.textLabel.text, title)
+        XCTAssertEqual( header?.textLabel.text, CollectionViewHeaderModel.mocked.title)
     }
 
     func test_viewController_onDisplayLastCell_tellPresenterToLoadNextPage() {
         let presenter = Presenter()
-        presenter.itemModelClosure = {page, page, completion in
-            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+
+        presenter.itemModelClosure = {_, _, completion in
+            completion(.mocked)
         }
         let sut = makeSut(presenter: presenter)
 
+        sut.loadViewIfNeeded()
         sut.collectionView.delegate?.collectionView?(sut.collectionView, willDisplay: UICollectionViewCell(), forItemAt: sut.lastIndexPath)
 
         XCTAssertTrue(presenter.loadNextPageCalled)
@@ -310,7 +309,7 @@ final class CollectionViewControllerTest: XCTestCase {
     func test_viewController_onMultipleDisplayLastCell_afterLoadtellPresenterToLoadNextPageOnce() {
         let presenter = Presenter()
         presenter.itemModelClosure = {_, _, completion in
-            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+            completion(.mocked)
         }
         let sut = makeSut(presenter: presenter)
 
@@ -324,7 +323,7 @@ final class CollectionViewControllerTest: XCTestCase {
     func test_viewController_onSelectCell_tellPresenterToChooseCell() {
         let presenter = Presenter()
         presenter.itemModelClosure = {_, _, completion in
-            completion(CollectionViewCellModel(imageData: Data(), title: ""))
+            completion(.mocked)
         }
         let sut = makeSut(presenter: presenter)
 
@@ -332,5 +331,17 @@ final class CollectionViewControllerTest: XCTestCase {
 
         XCTAssertTrue(presenter.chooseItemCalled)
 
+    }
+}
+
+extension CollectionViewCellModel {
+    static var mocked: CollectionViewCellModel {
+        CollectionViewCellModel(imageData: UIImage.init(systemName: "heart.fill")!.pngData()!, title: "Title")
+    }
+}
+
+extension CollectionViewHeaderModel {
+    static var mocked: CollectionViewHeaderModel {
+        CollectionViewHeaderModel(title: "Title")
     }
 }
