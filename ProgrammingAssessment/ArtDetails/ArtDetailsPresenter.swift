@@ -23,11 +23,12 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
     }
 
     func loadArt(artId: String) {
-        interactor.loadArtDetails(artId: artId) { result in
+        interactor.loadArtDetails(artId: artId) { [weak self] result in
             switch result {
             case let .success(artDetails):
                 let model = ArtDetailsViewModel.ArtDetails(title: artDetails.title)
-                self.view.updateDetails(with: model)
+                self?.view.updateDetails(with: model)
+                self?.loadImage(url: artDetails.webImage.url)
             case let .failure(error):
                 print(error)
             }
@@ -36,5 +37,17 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
 
     func routBack() {
         router?.routeToCollection()
+    }
+
+    private func loadImage(url: URL?) {
+        guard let url = url else { return }
+        interactor.loadArtDetailsImageData(from: url) {[weak self] result in
+            switch result {
+            case let .success(data):
+                self?.view.updateImage(with: data)
+            case let .failure(error):
+                print(error)
+            }
+        }
     }
 }

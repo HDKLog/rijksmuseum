@@ -2,7 +2,7 @@ import XCTest
 
 @testable import ProgrammingAssessment
 class ArtDetailsPresenterTest: XCTestCase {
-    class View:ArtDetailsView {
+    class View: ArtDetailsView {
 
         var configureCalled: Bool { configureCalls > 0 }
         var configureCalls: Int = 0
@@ -20,6 +20,14 @@ class ArtDetailsPresenterTest: XCTestCase {
             updateDetailsClosure(model)
         }
 
+        var updateImageCalled: Bool { updateImageCalls > 0 }
+        var updateImageCalls: Int = 0
+        var updateImageClosure: (Data) -> Void = {_ in }
+        func updateImage(with data: Data) {
+            updateImageCalls += 1
+            updateImageClosure(data)
+        }
+
 
     }
 
@@ -33,12 +41,12 @@ class ArtDetailsPresenterTest: XCTestCase {
             loadArtDetailsClosure(artId, completion)
         }
 
-        var loadCollectionItemImageDataCalled: Bool { loadCollectionItemImageDataCalls > 0 }
-        var loadCollectionItemImageDataCalls: Int = 0
-        var loadCollectionItemImageDataClosure: (URL,  @escaping ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadCollectionItemImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
-            loadCollectionItemImageDataCalls += 1
-            loadCollectionItemImageDataClosure(url, completion)
+        var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
+        var loadArtDetailsImageDataCalls: Int = 0
+        var loadArtDetailsImageDataClosure: (URL,  @escaping ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
+        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+            loadArtDetailsImageDataCalls += 1
+            loadArtDetailsImageDataClosure(url, completion)
         }
 
 
@@ -84,7 +92,7 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertEqual(view.configureCalls, 1)
     }
 
-    func test_artDetailsPresenter_onLoadArt_loadsArtFromInteractor() {
+    func test_artDetailsPresenter_onLoadArt_loadsArtDetailsFromInteractor() {
 
         let artId = "artId"
         let view = View()
@@ -97,7 +105,7 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertTrue(interactor.loadArtDetailsCalled)
     }
 
-    func test_artDetailsPresenter_onLoadArt_loadsArtFromInteractorOnce() {
+    func test_artDetailsPresenter_onLoadArt_loadsArtDetailsFromInteractorOnce() {
 
         let artId = "artId"
         let view = View()
@@ -110,7 +118,7 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertEqual(interactor.loadArtDetailsCalls, 1)
     }
 
-    func test_artDetailsPresenter_onLoadArt_loadsArtFromInteractorWithId() {
+    func test_artDetailsPresenter_onLoadArt_loadsArtDetailsFromInteractorWithId() {
 
         let artId = "artId"
         var loadedId: String?
@@ -128,6 +136,24 @@ class ArtDetailsPresenterTest: XCTestCase {
         XCTAssertEqual(loadedId, loadedId)
     }
 
+    func test_artDetailsPresenter_onLoadArt_loadsArtDetailsSuccessLoadImage() {
+
+        let artId = "artId"
+        let artDetails = ArtDetails.mocked
+        let view = View()
+        let interactor = Interactor()
+
+        interactor.loadArtDetailsClosure = { _, completion in
+            completion(.success(artDetails))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadArt(artId: artId)
+
+        XCTAssertTrue(interactor.loadArtDetailsImageDataCalled)
+    }
+
     func test_artDetailsPresenter_onRoutBack_tellsRouterRouteToCollection() {
 
         let view = View()
@@ -139,5 +165,12 @@ class ArtDetailsPresenterTest: XCTestCase {
         sut.routBack()
 
         XCTAssertTrue(router.routeToCollectionCalled)
+    }
+}
+
+extension ArtDetails {
+    static var mocked: ArtDetails {
+        let image = ArtDetails.Image(guid: "", width: 0, height: 0, url: URL(string: "https://www.google.com/"))
+        return ArtDetails(id: "", title: "", description: "", webImage: image)
     }
 }

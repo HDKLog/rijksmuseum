@@ -4,6 +4,7 @@ import SkeletonView
 protocol ArtDetailsView {
     func configure(with model: ArtDetailsViewModel.InitialInfo)
     func updateDetails(with model: ArtDetailsViewModel.ArtDetails)
+    func updateImage(with data: Data)
 }
 
 class ArtDetailsViewController: UIViewController, ArtDetailsView {
@@ -11,7 +12,7 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
 
     let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: "test_image")!
         imageView.layer.borderWidth = 1
@@ -36,7 +37,8 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            imageView.heightAnchor.constraint(equalToConstant: view.frame.height/2)
         ])
     }
 
@@ -52,6 +54,10 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
 
     func updateDetails(with model: ArtDetailsViewModel.ArtDetails) {
 
+    }
+
+    func updateImage(with data: Data) {
+        imageView.image = UIImage(data: data)
     }
 
     @objc

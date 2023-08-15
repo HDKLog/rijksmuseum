@@ -112,7 +112,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
         let sut = makeSut(service: service)
 
-        sut.loadCollectionItemImageData(from: url) { _ in }
+        sut.loadArtDetailsImageData(from: url) { _ in }
 
         XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains(urlString) == true)
     }
@@ -129,7 +129,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url) {
+        sut.loadArtDetailsImageData(from: url) {
             loadedImageResult = $0
             expectation.fulfill()
         }
@@ -150,7 +150,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url) {
+        sut.loadArtDetailsImageData(from: url) {
             loadedImageResult = $0
             expectation.fulfill()
         }
