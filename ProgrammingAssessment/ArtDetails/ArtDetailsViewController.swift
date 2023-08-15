@@ -5,6 +5,7 @@ protocol ArtDetailsView {
     func configure(with model: ArtDetailsViewModel.InitialInfo)
     func updateDetails(with model: ArtDetailsViewModel.ArtDetails)
     func updateImage(with data: Data)
+    func displayError(error: Error)
 }
 
 class ArtDetailsViewController: UIViewController, ArtDetailsView {
@@ -14,9 +15,7 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.image = UIImage(named: "test_image")!
-        imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.gray.cgColor
+        imageView.isSkeletonable = true
         return imageView
     }()
 
@@ -24,6 +23,11 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
         super.viewDidLoad()
         setup()
         presenter?.loadView()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        imageView.showAnimatedGradientSkeleton()
     }
 
     private func setup() {
@@ -44,20 +48,26 @@ class ArtDetailsViewController: UIViewController, ArtDetailsView {
 
     func configure(with model: ArtDetailsViewModel.InitialInfo) {
         navigationItem.setHidesBackButton(true, animated: false)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "◀︎ \(model.backButtonTitle)",
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: model.backButtonTitle,
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(backToCollection))
-        
 
     }
 
     func updateDetails(with model: ArtDetailsViewModel.ArtDetails) {
-
+        
     }
 
     func updateImage(with data: Data) {
         imageView.image = UIImage(data: data)
+        imageView.hideSkeleton()
+    }
+
+    func displayError(error: Error) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default))
+        self.present(alert, animated: true, completion: nil)
     }
 
     @objc

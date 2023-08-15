@@ -45,17 +45,68 @@ class ArtDetailsViewControllerTests: XCTestCase {
         XCTAssertTrue(presenter.loadViewCalled)
     }
 
+    func test_viewController_onConfigure_setsBackButtonTitle() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.loadViewIfNeeded()
+        sut.configure(with: ArtDetailsViewModel.InitialInfo.mocked)
+
+        XCTAssertEqual(sut.navigationItem.leftBarButtonItem?.title, ArtDetailsViewModel.InitialInfo.mocked.backButtonTitle)
+    }
+
+    func test_viewController_onUpdateDetails_setsArtDetails() {
+
+    }
+
+    func test_viewController_updateImage_setsImageToImageView() {
+        let base64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg=="
+        let data = Data(base64Encoded: base64.data(using: .utf8)!)!
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.loadViewIfNeeded()
+        sut.updateImage(with: data)
+        XCTAssertNotNil(sut.imageView.image)
+    }
+
+    func test_viewController_displayError_displayErrorLocalizedDescription() {
+        let error = NSError(domain: "testDomain", code: 0)
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        let window = UIWindow()
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        sut.loadViewIfNeeded()
+        sut.displayError(error: error)
+
+        let presentedController = sut.presentedViewController as? UIAlertController
+        XCTAssertEqual(presentedController?.message, error.localizedDescription)
+    }
+
     func test_viewController_onBackButtonTap_tellPresenterToRoutBack() {
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 
         sut.loadViewIfNeeded()
-        sut.configure(with: ArtDetailsViewModel.InitialInfo(backButtonTitle: "Title"))
+        sut.configure(with: ArtDetailsViewModel.InitialInfo.mocked)
         let item = sut.navigationItem.leftBarButtonItem
 
         _ = item?.target?.perform(item?.action, with: nil)
 
         XCTAssertTrue(presenter.routBackCalled)
     }
+}
 
+extension ArtDetailsViewModel.InitialInfo {
+    static var mocked: ArtDetailsViewModel.InitialInfo {
+        ArtDetailsViewModel.InitialInfo(backButtonTitle: "Title")
+    }
+}
+
+extension ArtDetailsViewModel.ArtDetails {
+    static var mocked: ArtDetailsViewModel.ArtDetails {
+        ArtDetailsViewModel.ArtDetails(title: "Title", description: "Description")
+    }
 }

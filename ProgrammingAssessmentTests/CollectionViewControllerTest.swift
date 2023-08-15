@@ -191,6 +191,21 @@ final class CollectionViewControllerTest: XCTestCase {
 
     }
 
+    func test_viewController_displayError_displayErrorLocalizedDescription() {
+        let error = NSError(domain: "testDomain", code: 0)
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        let window = UIWindow()
+        window.rootViewController = sut
+        window.makeKeyAndVisible()
+        sut.loadViewIfNeeded()
+        sut.displayError(error: error)
+
+        let presentedController = sut.presentedViewController as? UIAlertController
+        XCTAssertEqual(presentedController?.message, error.localizedDescription)
+    }
+
     func test_viewController_onMultipleCellLoading_doNotLoadCellModelTwice() {
         var callsForIndexPath: Int = 0
         let indexPath = IndexPath(row: 0, section: 0)

@@ -28,6 +28,14 @@ class ArtDetailsPresenterTest: XCTestCase {
             updateImageClosure(data)
         }
 
+        var displayErrorCalled: Bool { displayErrorCalls > 0 }
+        var displayErrorCalls: Int = 0
+        var displayErrorClosure: (Error) -> Void = {_ in }
+        func displayError(error: Error) {
+            displayErrorCalls += 1
+            displayErrorClosure(error)
+        }
+
 
     }
 

@@ -13,5 +13,6 @@ struct ArtDetailsViewModel {
     }
     struct ArtDetails {
         let title: String
+        let description: String
     }
 }
