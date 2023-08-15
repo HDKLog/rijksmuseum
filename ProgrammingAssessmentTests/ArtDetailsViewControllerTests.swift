@@ -55,8 +55,24 @@ class ArtDetailsViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.navigationItem.leftBarButtonItem?.title, ArtDetailsViewModel.InitialInfo.mocked.backButtonTitle)
     }
 
-    func test_viewController_onUpdateDetails_setsArtDetails() {
+    func test_viewController_onUpdateDetails_setsArtDetailsTitle() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
 
+        sut.loadViewIfNeeded()
+        sut.updateDetails(with: ArtDetailsViewModel.ArtDetails.mocked)
+
+        XCTAssertEqual(sut.titleLabel.text, ArtDetailsViewModel.ArtDetails.mocked.title)
+    }
+
+    func test_viewController_onUpdateDetails_setsArtDetailsDescription() {
+        let presenter = Presenter()
+        let sut = makeSut(presenter: presenter)
+
+        sut.loadViewIfNeeded()
+        sut.updateDetails(with: ArtDetailsViewModel.ArtDetails.mocked)
+
+        XCTAssertEqual(sut.descriptionView.text, ArtDetailsViewModel.ArtDetails.mocked.description)
     }
 
     func test_viewController_updateImage_setsImageToImageView() {
