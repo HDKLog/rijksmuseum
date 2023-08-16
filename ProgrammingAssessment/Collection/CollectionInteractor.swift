@@ -1,6 +1,11 @@
 import Foundation
 
-typealias CollectionLoadingResult = Result<CollectionPage, Error>
+enum CollectionLoadingError: Error {
+    case parsingError(Error)
+    case serviceError(ServiceLoadingError)
+}
+
+typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>
 typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
 
 typealias CollectionImageLoadingResult = Result<Data, Error>
@@ -21,13 +26,26 @@ class CollectionInteractor: CollectionInteracting {
 
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
 
-        service.loadCollection(page: page, count: count) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case let .success(collectionInof):
-                    completion(.success( CollectionPage(title: "Page \(page)", items: collectionInof.collectionItems) ))
-                case let .failure(error):
-                    completion(.failure(error))
+        let query = RijksmuseumServiceQuery(request: .all).withPage(page: page).withPageSize(pageSize: count)
+
+        service.getData(query: query) { result in
+            switch result {
+            case let .success(data):
+                do {
+                    let collectionInof = try JSONDecoder().decode(CollectionInfo.self, from: data)
+                    let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInof.collectionItems)
+                    DispatchQueue.main.async {
+                        completion(.success( collectionPage ))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(.parsingError(error)))
+                    }
+                }
+
+            case let .failure(error):
+                DispatchQueue.main.async {
+                    completion(.failure(.serviceError(error)))
                 }
             }
         }
@@ -35,7 +53,10 @@ class CollectionInteractor: CollectionInteracting {
 
     func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
 
-        service.loadImage(url: url) { result in
+        var urlString = url.absoluteString
+        urlString.removeLast()
+        let query = RijksmuseumImageQuery(url: urlString).withScale(scale: 400)
+        service.getData(query: query) { result in
             DispatchQueue.main.async {
                 switch result {
                 case let .success(data):
