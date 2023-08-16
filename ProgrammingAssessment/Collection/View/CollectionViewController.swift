@@ -214,6 +214,10 @@ extension CollectionViewController: UICollectionViewDataSource {
         let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter,
                                                                      withReuseIdentifier: CollectionViewFooter.resuableId,
                                                                      for: indexPath)
+        if let collectionViewFooter = footer as? CollectionViewFooter {
+
+            lastIndexPath.section == indexPath.section ? collectionViewFooter.indicator.startAnimating() :  collectionViewFooter.indicator.stopAnimating()
+        }
         return footer
     }
 

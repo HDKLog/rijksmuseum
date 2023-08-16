@@ -27,6 +27,5 @@ class CollectionViewFooter: UICollectionReusableView {
             indicator.centerXAnchor.constraint(equalTo: centerXAnchor),
             indicator.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
-        indicator.startAnimating()
     }
 }

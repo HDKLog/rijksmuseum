@@ -86,5 +86,7 @@ class CollectionViewCell: UICollectionViewCell {
 
     func reset() {
         contentView.showAnimatedGradientSkeleton()
+        imageView.image = nil
+        descriptionLabel.text = nil
     }
 }

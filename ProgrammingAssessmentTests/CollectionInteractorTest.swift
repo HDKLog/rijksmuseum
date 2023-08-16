@@ -94,8 +94,12 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadUrl() {
-        let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s"
-        let url = URL(string:"\(urlString)0")!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
+        let urlString: String = {
+            var str = url.absoluteString
+            str.removeLast()
+            return str
+        }()
         var serviceQuery: ServiceQuery?
         let service = Service()
         service.getDataClosure = { query, completion in
@@ -109,8 +113,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadScale() {
-        let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s"
-        let url = URL(string:"\(urlString)0")!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let scale = CollectionImageLoadingScale.thumbnail
         var serviceQuery: ServiceQuery?
         let service = Service()
@@ -125,8 +128,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onSuccessGivesImageData() {
-        let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s"
-        let url = URL(string:"\(urlString)0")!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let imageData = Data(count: 2)
         var loadedImageResult: CollectionImageLoadingResult?
         let scale = CollectionImageLoadingScale.thumbnail
@@ -147,8 +149,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onFailureGivesError() {
-        let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s"
-        let url = URL(string:"\(urlString)0")!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let error = ServiceLoadingError.invalidQuery
         var loadedImageResult: CollectionImageLoadingResult?
         let scale = CollectionImageLoadingScale.thumbnail
