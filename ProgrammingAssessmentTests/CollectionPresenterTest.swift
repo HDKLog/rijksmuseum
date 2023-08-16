@@ -223,6 +223,20 @@ final class CollectionPresenterTest: XCTestCase {
 
         XCTAssertTrue(view.displayErrorCalled)
     }
+
+    func test_collectionPresenter_onLoadNextPage_onLoadingFailureMaxTimesStopLoading() {
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        XCTAssertEqual(sut.nubOfRetry, sut.maxNumberOfRetryes)
+    }
     
 
     func test_collectionPresenter_onLoadCollection_configureView() {
@@ -303,6 +317,26 @@ final class CollectionPresenterTest: XCTestCase {
         sut.itemModel(on: 0, at: 0) { _ in }
 
         XCTAssertTrue(view.displayErrorCalled)
+    }
+
+    func test_collectionPresenter_onItemModel_onFailureMaxTimesStopLoading() {
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked))
+        }
+
+        interactor.loadCollectionItemImageDataClosure = { _, _, completion in
+            completion(.failure(.serviceError(.invalidQuery)))
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        sut.itemModel(on: 0, at: 0) { _ in }
+
+        XCTAssertEqual(sut.nubOfRetry, sut.maxNumberOfRetryes)
     }
 
     func test_collectionPresenter_onHeaderModel_returnsHeaderModel() {
