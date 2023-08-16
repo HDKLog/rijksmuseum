@@ -20,7 +20,7 @@ class CollectionPresenter: CollectionPresenting {
     var router: CollectionRouting?
 
     var currentPage: Int = 1
-    let resultsOnPage: Int = 10
+    let resultsOnPage: Int = 30
 
     var collectionPages: [CollectionPage] = []
 

@@ -26,6 +26,7 @@ class CollectionViewController: UIViewController, CollectionView {
 
     lazy var collectionView: UICollectionView = {
 
+        let width = min(view.frame.width, view.frame.height)
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = DesignBook.Layout.Spacing.medium
@@ -34,12 +35,13 @@ class CollectionViewController: UIViewController, CollectionView {
                                            left: DesignBook.Layout.Spacing.medium,
                                            bottom: 0,
                                            right: DesignBook.Layout.Spacing.medium)
-        layout.itemSize = CGSize(width: (view.frame.width - DesignBook.Layout.Spacing.medium * 3)/2,
+        layout.itemSize = CGSize(width: (width - DesignBook.Layout.Spacing.medium * 3)/2,
                                  height: DesignBook.Layout.Sizes.Image.medium)
-        layout.headerReferenceSize = CGSize(width: view.frame.width,
+        layout.headerReferenceSize = CGSize(width: width,
                                             height: DesignBook.Layout.Sizes.Text.Header.medium)
-        layout.footerReferenceSize = CGSize(width: view.frame.width,
+        layout.footerReferenceSize = CGSize(width: width,
                                             height: DesignBook.Layout.Sizes.Text.Header.medium)
+        layout.estimatedItemSize = .zero
 
         let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.resuableId)
@@ -47,7 +49,6 @@ class CollectionViewController: UIViewController, CollectionView {
         collectionView.register(CollectionViewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooter.resuableId)
         collectionView.backgroundColor = DesignBook.Color.Background.list.uiColor()
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isPrefetchingEnabled = false
