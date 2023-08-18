@@ -39,8 +39,7 @@ class RijksmuseumServiceQuery: ServiceQuery {
     }
 
     let baseUrl = "https://www.rijksmuseum.nl/api"
-#warning("provide API KEY")
-    let key = ""
+    let key = "0fiuZFh4"
     var format: Format = .json
     var culture: Culture = .en
     var request: Request
