@@ -52,6 +52,8 @@ class CollectionViewController: UIViewController, CollectionView {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isPrefetchingEnabled = false
+        collectionView.alwaysBounceVertical = true
+        collectionView.refreshControl = refreshControl
 
         return collectionView
 
@@ -71,6 +73,11 @@ class CollectionViewController: UIViewController, CollectionView {
         return label
     }()
 
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshCollection), for: .valueChanged)
+        return refreshControl
+    }()
 
     var lastIndexPath: IndexPath {
         let lastSection = collectionView.numberOfSections-1
@@ -143,6 +150,12 @@ class CollectionViewController: UIViewController, CollectionView {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default))
         self.present(alert, animated: true, completion: nil)
+    }
+
+    @objc
+    private func refreshCollection() {
+        refreshControl.endRefreshing()
+        print("refresh")
     }
 }
 

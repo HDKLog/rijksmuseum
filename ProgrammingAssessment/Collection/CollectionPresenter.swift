@@ -21,8 +21,6 @@ class CollectionPresenter: CollectionPresenting {
 
     var currentPage: Int = 1
     let resultsOnPage: Int = 30
-    var nubOfRetry: Int = 0
-    let maxNumberOfRetryes: Int = 3
 
     var collectionPages: [CollectionPage] = []
 
@@ -69,10 +67,9 @@ class CollectionPresenter: CollectionPresenting {
             switch result {
             case let .success(data):
                 completion(CollectionViewCellModel(imageData: data, title: item.title))
-                self?.nubOfRetry = 0
             case let .failure(error):
                 self?.view.displayError(error: error)
-                self?.tryToReloadItemModel(on: page, at: index, completion: completion)
+                self?.itemModel(on: page, at:index, completion: completion)
             }
         }
     }
@@ -93,23 +90,10 @@ class CollectionPresenter: CollectionPresenting {
                 self?.collectionPages.append(pageinfo)
                 self?.view.updateCollection()
                 self?.currentPage += 1
-                self?.nubOfRetry = 0
             case let .failure(error):
                 self?.view.displayError(error: error)
-                self?.tryToReloadNewxtPage()
+                self?.loadNextPage()
             }
         }
-    }
-
-    private func tryToReloadNewxtPage() {
-        guard nubOfRetry < maxNumberOfRetryes else { return }
-        nubOfRetry += 1
-        loadNextPage()
-    }
-
-    private func tryToReloadItemModel(on: Int, at:Int, completion: @escaping (CollectionViewCellModel) -> Void) {
-        guard nubOfRetry < maxNumberOfRetryes else { return }
-        nubOfRetry += 1
-        itemModel(on: on, at:at, completion: completion)
     }
 }
