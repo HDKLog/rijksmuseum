@@ -30,17 +30,14 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func loadCollection() {
-        let loadingConfiguration = CollectionViewModel(title: "Collection", animatingLoad: true, firstScreenText: "Loading")
-        let loadSuccessConfiguration = CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: nil)
-        let loadFailConfiguration = CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load pull to refresh")
-        view.configure(with: loadingConfiguration)
+        view.configure(with: .loadingModel)
         interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
             switch result {
             case let .success(pageinfo):
-                self?.view.configure(with: loadSuccessConfiguration)
+                self?.view.configure(with: .loadSuccessModel)
                 self?.updateNext(page: pageinfo)
             case let .failure(error):
-                self?.view.configure(with: loadFailConfiguration)
+                self?.view.configure(with: .loadFailModel)
                 self?.view.displayError(error: error)
             }
         }
@@ -99,5 +96,19 @@ class CollectionPresenter: CollectionPresenting {
         collectionPages.append(page)
         view.updateCollection()
         currentPage += 1
+    }
+}
+
+extension CollectionViewModel {
+    static var loadingModel: CollectionViewModel {
+        CollectionViewModel(title: "Collection", animatingLoad: true, firstScreenText: "Loading")
+    }
+
+    static var loadSuccessModel: CollectionViewModel {
+        CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: nil)
+    }
+
+    static var loadFailModel: CollectionViewModel {
+        CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load pull to refresh")
     }
 }
