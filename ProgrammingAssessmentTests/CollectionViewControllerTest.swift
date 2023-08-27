@@ -128,11 +128,10 @@ final class CollectionViewControllerTest: XCTestCase {
     }
 
     func test_viewController_onConfigure_withEmptyFirstScreenTextHideInitialView() {
-        let title = "Test Title"
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 
-        sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: nil))
+        sut.configure(with: CollectionViewModel(title: nil, animatingLoad: true, firstScreenText: nil))
 
         XCTAssertTrue(sut.backgroundView.isHidden)
     }

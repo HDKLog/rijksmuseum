@@ -53,19 +53,18 @@ class CollectionViewController: UIViewController, CollectionView {
         collectionView.dataSource = self
         collectionView.isPrefetchingEnabled = false
 
-        collectionView.alwaysBounceVertical = true
-        collectionView.refreshControl = refreshControl
-
         collectionView.backgroundView = backgroundView
 
         return collectionView
 
     }()
 
-    let backgroundView: UIView = {
+    lazy var backgroundView: UIView = {
         let view = UIView()
         view.isSkeletonable = true
         view.isHidden = true
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(retryToLoad))
+        view.addGestureRecognizer(gestureRecognizer)
         return view
     }()
     
@@ -74,12 +73,6 @@ class CollectionViewController: UIViewController, CollectionView {
         label.textColor = DesignBook.Color.Foreground.light.uiColor()
         label.font = UIFont.systemFont(ofSize: DesignBook.Layout.Sizes.Text.Font.large)
         return label
-    }()
-
-    lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refreshCollection), for: .valueChanged)
-        return refreshControl
     }()
 
     var lastIndexPath: IndexPath {
@@ -148,9 +141,8 @@ class CollectionViewController: UIViewController, CollectionView {
     }
 
     @objc
-    private func refreshCollection() {
-        refreshControl.endRefreshing()
-        print("refresh")
+    private func retryToLoad() {
+        presenter?.loadCollection()
     }
 }
 

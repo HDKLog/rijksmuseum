@@ -92,6 +92,10 @@ class CollectionPresenter: CollectionPresenting {
         }
     }
 
+    func reload() {
+        loadCollection()
+    }
+
     private func updateNext(page: CollectionPage) {
         collectionPages.append(page)
         view.updateCollection()
@@ -109,6 +113,6 @@ extension CollectionViewModel {
     }
 
     static var loadFailModel: CollectionViewModel {
-        CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load pull to refresh")
+        CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load. Tap to retry")
     }
 }
