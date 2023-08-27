@@ -30,17 +30,17 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func loadCollection() {
-
-        view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: true, firstScreenText: "Loading"))
+        let loadingConfiguration = CollectionViewModel(title: "Collection", animatingLoad: true, firstScreenText: "Loading")
+        let loadSuccessConfiguration = CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: nil)
+        let loadFailConfiguration = CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load pull to refresh")
+        view.configure(with: loadingConfiguration)
         interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
             switch result {
             case let .success(pageinfo):
-                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: nil))
-                self?.collectionPages.append(pageinfo)
-                self?.view.updateCollection()
-                self?.currentPage += 1
+                self?.view.configure(with: loadSuccessConfiguration)
+                self?.updateNext(page: pageinfo)
             case let .failure(error):
-                self?.view.configure(with: CollectionViewModel(title: "Collection", animatingLoad: false, firstScreenText: "Fail to load"))
+                self?.view.configure(with: loadFailConfiguration)
                 self?.view.displayError(error: error)
             }
         }
@@ -87,13 +87,17 @@ class CollectionPresenter: CollectionPresenting {
         interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
             switch result {
             case let .success(pageinfo):
-                self?.collectionPages.append(pageinfo)
-                self?.view.updateCollection()
-                self?.currentPage += 1
+                self?.updateNext(page: pageinfo)
             case let .failure(error):
                 self?.view.displayError(error: error)
                 self?.loadNextPage()
             }
         }
+    }
+
+    private func updateNext(page: CollectionPage) {
+        collectionPages.append(page)
+        view.updateCollection()
+        currentPage += 1
     }
 }

@@ -102,7 +102,7 @@ final class CollectionViewControllerTest: XCTestCase {
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 
-        XCTAssertTrue(sut.initialView.isHidden)
+        XCTAssertTrue(sut.backgroundView.isHidden)
     }
 
     func test_viewController_onConfigure_withFirstScreenTextShowsInitialView() {
@@ -113,7 +113,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: firstScreenText))
 
-        XCTAssertFalse(sut.initialView.isHidden)
+        XCTAssertFalse(sut.backgroundView.isHidden)
     }
 
     func test_viewController_onConfigure_withFirstScreenTextShowsText() {
@@ -134,7 +134,7 @@ final class CollectionViewControllerTest: XCTestCase {
 
         sut.configure(with: CollectionViewModel(title: title, animatingLoad: true, firstScreenText: nil))
 
-        XCTAssertTrue(sut.initialView.isHidden)
+        XCTAssertTrue(sut.backgroundView.isHidden)
     }
 
     func test_viewController_onUpdateCollection_askPresenterForNumberOfPages() {

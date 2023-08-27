@@ -52,14 +52,17 @@ class CollectionViewController: UIViewController, CollectionView {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isPrefetchingEnabled = false
+
         collectionView.alwaysBounceVertical = true
         collectionView.refreshControl = refreshControl
+
+        collectionView.backgroundView = backgroundView
 
         return collectionView
 
     }()
 
-    let initialView: UIView = {
+    let backgroundView: UIView = {
         let view = UIView()
         view.isSkeletonable = true
         view.isHidden = true
@@ -115,30 +118,22 @@ class CollectionViewController: UIViewController, CollectionView {
     }
 
     private func setupInitialView() {
-        view.addSubview(initialView)
-        initialView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            initialView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: DesignBook.Layout.Spacing.medium),
-            initialView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -DesignBook.Layout.Spacing.medium),
-            initialView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: DesignBook.Layout.Spacing.medium),
-            initialView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -DesignBook.Layout.Spacing.medium)
-        ])
 
 
-        initialView.addSubview(initialViewLabel)
+        backgroundView.addSubview(initialViewLabel)
         initialViewLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            initialViewLabel.centerXAnchor.constraint(equalTo: initialView.centerXAnchor),
-            initialViewLabel.centerYAnchor.constraint(equalTo: initialView.centerYAnchor)
+            initialViewLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            initialViewLabel.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor)
         ])
     }
 
     func configure(with model: CollectionViewModel) {
         titleLabel.text = model.title
         navigationItem.title = model.title
-        model.animatingLoad ? initialView.showAnimatedGradientSkeleton() : initialView.hideSkeleton()
+        model.animatingLoad ? backgroundView.showAnimatedGradientSkeleton() : backgroundView.hideSkeleton()
         initialViewLabel.text = model.firstScreenText
-        initialView.isHidden = model.firstScreenText == nil
+        backgroundView.isHidden = model.firstScreenText == nil
     }
 
     func updateCollection() {
