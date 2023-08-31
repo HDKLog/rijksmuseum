@@ -43,16 +43,16 @@ class ArtDetailsPresenterTest: XCTestCase {
 
         var loadArtDetailsCalled: Bool { loadArtDetailsCalls > 0 }
         var loadArtDetailsCalls: Int = 0
-        var loadArtDetailsClosure: (String,  @escaping ArtDetailsLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+        var loadArtDetailsClosure: (String,  @escaping ArtDetailsResultHandler) -> Void = {_, _ in }
+        func loadArtDetails(artId: String, completion: @escaping ArtDetailsResultHandler) {
             loadArtDetailsCalls += 1
             loadArtDetailsClosure(artId, completion)
         }
 
         var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
         var loadArtDetailsImageDataCalls: Int = 0
-        var loadArtDetailsImageDataClosure: (URL,  @escaping ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+        var loadArtDetailsImageDataClosure: (URL,  @escaping ArtDetailsImageResultHandler) -> Void = {_, _ in }
+        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageResultHandler) {
             loadArtDetailsImageDataCalls += 1
             loadArtDetailsImageDataClosure(url, completion)
         }
@@ -210,7 +210,7 @@ class ArtDetailsPresenterTest: XCTestCase {
         let interactor = Interactor()
 
         interactor.loadArtDetailsClosure = { _, completion in
-            completion(.failure(.serviceError(.invalidQuery)))
+            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
         }
 
         let sut = makeSut(view: view, interactor: interactor)
@@ -276,7 +276,7 @@ class ArtDetailsPresenterTest: XCTestCase {
         }
 
         interactor.loadArtDetailsImageDataClosure = { _, completion in
-            completion(.failure(.serviceError(.invalidQuery)))
+            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
         }
 
         let sut = makeSut(view: view, interactor: interactor)
@@ -301,9 +301,20 @@ class ArtDetailsPresenterTest: XCTestCase {
 }
 
 extension ArtDetails {
-    static var mocked: ArtDetails {
-        let image = ArtDetails.Image(guid: "", width: 0, height: 0, url: URL(string: "https://www.google.com/"))
-        return ArtDetails(id: "", title: "", description: "", webImage: image)
+    static var mocked : ArtDetails {
+        ArtDetails(
+            id: "id",
+            title: "Title",
+            description: "Desc",
+            webImage: Image(
+                guid: "guid",
+                width: 2500,
+                height: 2034,
+                url: URL(
+                    string: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
+                )
+            )
+        )
     }
 }
 

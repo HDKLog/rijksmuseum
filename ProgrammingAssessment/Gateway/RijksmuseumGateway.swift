@@ -24,7 +24,7 @@ typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
 typealias CollectionImageLoadingResult = Result<Data, CollectionImageLoadingError>
 typealias CollectionImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
 
-typealias ArtDetailsLoadingResult = Result<ArtDetails, ArtDetailsLoadingError>
+typealias ArtDetailsLoadingResult = Result<ArtDetailsInfo, ArtDetailsLoadingError>
 typealias ArtDetailsLoadingResultHandler = (ArtDetailsLoadingResult) -> Void
 
 typealias ArtDetailsImageLoadingResult = Result<Data, ArtDetailsImageLoadingError>
@@ -96,10 +96,9 @@ class RijksmuseumArtGateway: ArtGateway {
             switch result {
             case let .success(data):
                 do {
-                    let artDetailsInfo = try JSONDecoder().decode(ArtDetailsInfo.self, from: data)
-                    let artDetails = artDetailsInfo.artDetails
+                    let info = try JSONDecoder().decode(ArtDetailsInfo.self, from: data)
                     DispatchQueue.main.async {
-                        completion(.success( artDetails ))
+                        completion(.success( info ))
                     }
                 } catch {
                     DispatchQueue.main.async {

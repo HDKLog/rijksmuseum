@@ -7,9 +7,23 @@
 
 import Foundation
 
+enum ArtDetailsError: Error {
+    case loading(error: ArtDetailsLoadingError)
+}
+
+enum ArtDetailsImageError: Error {
+    case loading(error: ArtDetailsImageLoadingError)
+}
+
+typealias ArtDetailsResult = Result<ArtDetails, ArtDetailsError>
+typealias ArtDetailsResultHandler = (ArtDetailsResult) -> Void
+
+typealias ArtDetailsImageResult = Result<Data, ArtDetailsImageError>
+typealias ArtDetailsImageResultHandler = (ArtDetailsImageResult) -> Void
+
 protocol ArtDetailsInteracting {
-    func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler)
-    func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler)
+    func loadArtDetails(artId: String, completion: @escaping ArtDetailsResultHandler)
+    func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageResultHandler)
 }
 
 class ArtDetailsInteractor: ArtDetailsInteracting {
@@ -20,12 +34,27 @@ class ArtDetailsInteractor: ArtDetailsInteracting {
         self.gateway = gateway
     }
 
-    func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
-        gateway.loadArtDetails(artId: artId, completion: completion)
+    func loadArtDetails(artId: String, completion: @escaping ArtDetailsResultHandler) {
+        gateway.loadArtDetails(artId: artId) { result in
+            switch result {
+            case let .success(info):
+                let details = info.artDetails
+                completion(.success(details))
+            case let .failure(error):
+                completion(.failure(.loading(error: error)))
+            }
+        }
     }
 
-    func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
-        gateway.loadArtDetailsImageData(from: url, completion: completion)
+    func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageResultHandler) {
+        gateway.loadArtDetailsImageData(from: url) { result in
+            switch result {
+            case let .success(data):
+                completion(.success(data))
+            case let .failure(error):
+                completion(.failure(.loading(error: error)))
+            }
+        }
     }
 
 }

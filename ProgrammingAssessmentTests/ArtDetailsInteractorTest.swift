@@ -37,29 +37,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
     }
 
-    var artDetailsInfo: ArtDetailsInfo {
-        let image = ArtDetailsInfo.Art.ImageInfo(
-            guid: "guid",
-            offsetPercentageX: 0,
-            offsetPercentageY: 1,
-            width: 2500,
-            height: 2034,
-            url: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0")
-
-        return ArtDetailsInfo(
-            artObject: ArtDetailsInfo.Art(
-                id: "id",
-                priref: "123",
-                objectNumber: "Number",
-                language: "en",
-                title: "Title",
-                webImage: image,
-                description: "Desc"
-            )
-        )
-    }
-
-    var artDetails: ArtDetails { artDetailsInfo.artDetails }
+    var artDetails: ArtDetails { ArtDetailsInfo.mocked.artDetails }
 
     func makeSut(gateway: Gateway) -> ArtDetailsInteractor {
         ArtDetailsInteractor(gateway: gateway)
@@ -89,11 +67,12 @@ class ArtDetailsInteractorTest: XCTestCase {
     }
 
     func test_artDetailsInteractor_onLoadArtDetails_onSuccessGivesArtDetails() {
-        let details = artDetailsInfo.artDetails
-        var result: ArtDetailsLoadingResult?
+        let info = ArtDetailsInfo.mocked
+        let details = ArtDetails.mocked
+        var result: ArtDetailsResult?
         let gateway = Gateway()
         gateway.loadArtDetailsClosure = {_, completion in
-            completion(.success(details))
+            completion(.success(info))
         }
         let sut = makeSut(gateway: gateway)
 
@@ -109,7 +88,7 @@ class ArtDetailsInteractorTest: XCTestCase {
 
     func test_artDetailsInteractor_onLoadArtDetails_onFailureGivesError() {
         let error = ServiceLoadingError.invalidQuery
-        var result: ArtDetailsLoadingResult?
+        var result: ArtDetailsResult?
         let gateway = Gateway()
         gateway.loadArtDetailsClosure = { _, completion in
             completion(.failure(.serviceError(error)))
@@ -123,7 +102,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(result, .failure(.serviceError(error)))
+        XCTAssertEqual(result, .failure(.loading(error: .serviceError(error))))
     }
 
     func test_artDetailsInteractor_onLoadImage_tellsServiceToLoadUrl() {
@@ -145,7 +124,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
         let url = URL(string:urlString)!
         let imageData = Data(count: 2)
-        var loadedImageResult: ArtDetailsImageLoadingResult?
+        var loadedImageResult: ArtDetailsImageResult?
         let gateway = Gateway()
         gateway.loadArtDetailsImageDataClosure = { url, completion in
             completion(.success(imageData))
@@ -166,7 +145,7 @@ class ArtDetailsInteractorTest: XCTestCase {
         let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
         let url = URL(string:urlString)!
         let error = ServiceLoadingError.invalidQuery
-        var loadedImageResult: ArtDetailsImageLoadingResult?
+        var loadedImageResult: ArtDetailsImageResult?
         let gateway = Gateway()
         gateway.loadArtDetailsImageDataClosure = { url, completion in
             completion(.failure(.serviceError(error)))
@@ -180,7 +159,31 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(loadedImageResult, .failure(.serviceError(error)))
+        XCTAssertEqual(loadedImageResult, .failure(.loading(error: .serviceError(error))))
+    }
+}
+
+extension ArtDetailsInfo {
+    static var mocked: ArtDetailsInfo {
+        let image = ArtDetailsInfo.Art.ImageInfo(
+            guid: "guid",
+            offsetPercentageX: 0,
+            offsetPercentageY: 1,
+            width: 2500,
+            height: 2034,
+            url: "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0")
+
+        return ArtDetailsInfo(
+            artObject: ArtDetailsInfo.Art(
+                id: "id",
+                priref: "123",
+                objectNumber: "Number",
+                language: "en",
+                title: "Title",
+                webImage: image,
+                description: "Desc"
+            )
+        )
     }
 }
 
@@ -202,14 +205,14 @@ extension ArtDetails.Image: Equatable {
     }
 }
 
-extension ArtDetailsLoadingError: Equatable {
-    public static func == (lhs: ArtDetailsLoadingError, rhs: ArtDetailsLoadingError) -> Bool {
+extension ArtDetailsError: Equatable {
+    public static func == (lhs: ArtDetailsError, rhs: ArtDetailsError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
 
-extension ArtDetailsImageLoadingError: Equatable {
-    public static func == (lhs: ArtDetailsImageLoadingError, rhs: ArtDetailsImageLoadingError) -> Bool {
+extension ArtDetailsImageError: Equatable {
+    public static func == (lhs: ArtDetailsImageError, rhs: ArtDetailsImageError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
