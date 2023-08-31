@@ -18,7 +18,7 @@ enum ArtDetailsImageLoadingError: Error {
     case serviceError(ServiceLoadingError)
 }
 
-typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>
+typealias CollectionLoadingResult = Result<CollectionInfo, CollectionLoadingError>
 typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
 
 typealias CollectionImageLoadingResult = Result<Data, CollectionImageLoadingError>
@@ -60,10 +60,9 @@ class RijksmuseumArtGateway: ArtGateway {
             switch result {
             case let .success(data):
                 do {
-                    let collectionInof = try JSONDecoder().decode(CollectionInfo.self, from: data)
-                    let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInof.collectionItems)
+                    let collectionInfo = try JSONDecoder().decode(CollectionInfo.self, from: data)
                     DispatchQueue.main.async {
-                        completion(.success( collectionPage ))
+                        completion(.success( collectionInfo ))
                     }
                 } catch {
                     DispatchQueue.main.async {

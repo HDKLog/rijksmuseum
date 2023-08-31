@@ -35,16 +35,16 @@ final class CollectionPresenterTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
-        var loadCollectionClosure: (Int, Int, @escaping CollectionLoadingResultHandler) -> Void = { _, _, _ in }
-        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler){
+        var loadCollectionClosure: (Int, Int, @escaping CollectionResultHandler) -> Void = { _, _, _ in }
+        func loadCollection(page: Int, count: Int, completion: @escaping CollectionResultHandler){
             loadCollectionCalls += 1
             loadCollectionClosure(page, count, completion)
         }
 
         var loadCollectionItemImageDataCalled: Bool { loadCollectionItemImageDataCalls > 0 }
         var loadCollectionItemImageDataCalls: Int = 0
-        var loadCollectionItemImageDataClosure: (URL, @escaping CollectionImageLoadingResultHandler) -> Void = { _, _ in }
-        func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+        var loadCollectionItemImageDataClosure: (URL, @escaping CollectionImageDataResultHandler) -> Void = { _, _ in }
+        func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageDataResultHandler) {
             loadCollectionItemImageDataCalls += 1
             loadCollectionItemImageDataClosure(url, completion)
         }
@@ -133,7 +133,7 @@ final class CollectionPresenterTest: XCTestCase {
         let interactor = Interactor()
         interactor.loadCollectionClosure = { page, _, completion in
             loadedPage = page
-            completion(.failure(.serviceError(.invalidQuery)))
+            completion(.failure(.loading(error:.serviceError(.invalidQuery))))
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -146,7 +146,7 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         interactor.loadCollectionClosure = { _, _, completion in
-            completion(.failure(.serviceError(.invalidQuery)))
+            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -193,7 +193,7 @@ final class CollectionPresenterTest: XCTestCase {
         interactor.loadCollectionClosure = { page, _, completion in
             if loadedPage == nil {
                 loadedPage = page
-                completion(.failure(.serviceError(.invalidQuery)))
+                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
                 return
             }
         }
@@ -211,7 +211,7 @@ final class CollectionPresenterTest: XCTestCase {
         interactor.loadCollectionClosure = { page, _, completion in
             if loadedPage == nil {
                 loadedPage = page
-                completion(.failure(.serviceError(.invalidQuery)))
+                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
                 return
             }
         }
@@ -291,7 +291,7 @@ final class CollectionPresenterTest: XCTestCase {
         interactor.loadCollectionItemImageDataClosure = { url, complition in
             if loadingUrl == nil {
                 loadingUrl = url
-                complition(.failure(.serviceError(.invalidQuery)))
+                complition(.failure(.loading(error: .serviceError(.invalidQuery))))
             }
         }
         let sut = makeSut(view: view, interactor: interactor)

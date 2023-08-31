@@ -80,26 +80,29 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_collectionInteractor_onLoadCollection_onSuccessGivesCollectionPage() {
-        var collectionPageResult: CollectionLoadingResult?
+        var collectionPageResult: CollectionResult?
+        let page = 0
+        let collectionInfo = CollectionInfo.mocked
+        let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInfo.collectionItems)
         let gateway = Gateway()
         gateway.loadCollectionClosure = { page, count, completion in
-            completion(.success(.mocked))
+            completion(.success(collectionInfo))
         }
         let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollection(page: 0, count: 3) {
+        sut.loadCollection(page: page, count: 3) {
             collectionPageResult = $0
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(collectionPageResult, .success(.mocked))
+        XCTAssertEqual(collectionPageResult, .success(collectionPage))
     }
 
     func test_collectionInteractor_onLoadCollection_onFailureGivesError() {
         let error = ServiceLoadingError.invalidQuery
-        var collectionPageResult: CollectionLoadingResult?
+        var collectionPageResult: CollectionResult?
         let gateway = Gateway()
         gateway.loadCollectionClosure = { _, _, completion in
             completion(.failure(.serviceError(error)))
@@ -113,7 +116,7 @@ final class CollectionInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(collectionPageResult, .failure(.serviceError(error)))
+        XCTAssertEqual(collectionPageResult, .failure(.loading(error: .serviceError(error))))
     }
 
     func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadUrl() {
@@ -129,7 +132,7 @@ final class CollectionInteractorTest: XCTestCase {
     func test_loadCollectionItemImageData_onLoadImage_onSuccessGivesImageData() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let imageData = Data(count: 2)
-        var loadedImageResult: CollectionImageLoadingResult?
+        var loadedImageResult: CollectionImageDataResult?
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
@@ -150,7 +153,7 @@ final class CollectionInteractorTest: XCTestCase {
     func test_loadCollectionItemImageData_onLoadImage_onFailureGivesError() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let error = ServiceLoadingError.invalidQuery
-        var loadedImageResult: CollectionImageLoadingResult?
+        var loadedImageResult: CollectionImageDataResult?
 
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
@@ -166,7 +169,7 @@ final class CollectionInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(loadedImageResult, .failure(.serviceError(error)))
+        XCTAssertEqual(loadedImageResult, .failure(.loading(error: .serviceError(error))))
     }
 }
 
@@ -226,14 +229,14 @@ extension CollectionPage.CollectionItem.Image: Equatable {
     }
 }
 
-extension CollectionLoadingError: Equatable {
-    public static func == (lhs: CollectionLoadingError, rhs: CollectionLoadingError) -> Bool {
+extension CollectionError: Equatable {
+    public static func == (lhs: CollectionError, rhs: CollectionError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
 
-extension CollectionImageLoadingError: Equatable {
-    public static func == (lhs: CollectionImageLoadingError, rhs: CollectionImageLoadingError) -> Bool {
+extension CollectionImageDataError: Equatable {
+    public static func == (lhs: CollectionImageDataError, rhs: CollectionImageDataError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
