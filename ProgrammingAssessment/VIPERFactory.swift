@@ -10,7 +10,8 @@ extension AppDelegate: VIPERFactory {
     func createCollection(endView: UIViewController ,routingEndpoint: CollectionRoutingEndpoint) -> CollectionViewController {
         let view = CollectionViewController()
         let service = Service()
-        let interactor = CollectionInteractor(service: service)
+        let gateway = RijksmuseumArtGateway(service: service)
+        let interactor = CollectionInteractor(gateway: gateway)
         let presenter = CollectionPresenter(view: view, interactor: interactor)
         let router = CollectionRouter(rootView: view, endView: endView, endpoint: routingEndpoint)
         presenter.router = router
@@ -22,7 +23,8 @@ extension AppDelegate: VIPERFactory {
     func createArtDetails() -> ArtDetailsViewController {
         let view = ArtDetailsViewController()
         let service = Service()
-        let interactor = ArtDetailsInteractor(service: service)
+        let gateway = RijksmuseumArtGateway(service: service)
+        let interactor = ArtDetailsInteractor(gateway: gateway)
         let presenter = ArtDetailsPresenter(view: view, interactor: interactor)
         let router = ArtDetailsRouter(artDetailsViewController: view)
         presenter.router = router

@@ -60,7 +60,7 @@ class CollectionPresenter: CollectionPresenting {
             return
         }
         
-        interactor.loadCollectionItemImageData(from: url, scale: .thumbnail) {[weak self] result in
+        interactor.loadCollectionItemImageData(from: url) {[weak self] result in
             switch result {
             case let .success(data):
                 completion(CollectionViewCellModel(imageData: data, title: item.title))

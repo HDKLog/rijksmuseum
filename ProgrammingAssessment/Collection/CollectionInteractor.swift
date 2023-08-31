@@ -1,85 +1,25 @@
 import Foundation
 
-enum CollectionLoadingError: Error {
-    case parsingError(Error)
-    case serviceError(ServiceLoadingError)
-}
-
-enum CollectionImageLoadingError: Error {
-    case serviceError(ServiceLoadingError)
-}
-
-typealias CollectionLoadingResult = Result<CollectionPage, CollectionLoadingError>
-typealias CollectionLoadingResultHandler = (CollectionLoadingResult) -> Void
-
-enum CollectionImageLoadingScale: Int {
-    case original = 0
-    case thumbnail = 400
-}
-
-typealias CollectionImageLoadingResult = Result<Data, CollectionImageLoadingError>
-typealias CollectionImageLoadingResultHandler = (CollectionImageLoadingResult) -> Void
-
 protocol CollectionInteracting {
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler)
-    func loadCollectionItemImageData(from url: URL,
-                                     scale: CollectionImageLoadingScale,
-                                     completion: @escaping CollectionImageLoadingResultHandler
-    )
+    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler)
 }
 
 class CollectionInteractor: CollectionInteracting {
 
-    let service: ServiceLoading
+    let gateway: ArtGateway
 
-    init(service: ServiceLoading) {
-        self.service = service
+    init(gateway: ArtGateway) {
+        self.gateway = gateway
     }
 
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
 
-        let query = RijksmuseumServiceQuery(request: .all).withPage(page: page).withPageSize(pageSize: count)
-
-        service.getData(query: query) { result in
-            switch result {
-            case let .success(data):
-                do {
-                    let collectionInof = try JSONDecoder().decode(CollectionInfo.self, from: data)
-                    let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInof.collectionItems)
-                    DispatchQueue.main.async {
-                        completion(.success( collectionPage ))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(.parsingError(error)))
-                    }
-                }
-
-            case let .failure(error):
-                DispatchQueue.main.async {
-                    completion(.failure(.serviceError(error)))
-                }
-            }
-        }
+        gateway.loadCollection(page: page, count: count, completion: completion)
     }
 
-    func loadCollectionItemImageData(from url: URL,
-                                     scale: CollectionImageLoadingScale,
-                                     completion: @escaping CollectionImageLoadingResultHandler) {
-
-        var urlString = url.absoluteString
-        urlString.removeLast()
-        let query = RijksmuseumImageQuery(url: urlString).withScale(scale: scale.rawValue)
-        service.getData(query: query) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case let .success(data):
-                    completion(.success( data))
-                case let .failure(error):
-                    completion(.failure(.serviceError(error)))
-                }
-            }
-        }
+    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+        gateway.loadCollectionImageData(from: url, completion: completion)
     }
 }
 

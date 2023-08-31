@@ -1,11 +1,9 @@
 import Foundation
 
 protocol ArtDetailsPresenting {
-
     func loadView()
     func loadArt(artId: String)
     func routBack()
-
 }
 
 class ArtDetailsPresenter: ArtDetailsPresenting {

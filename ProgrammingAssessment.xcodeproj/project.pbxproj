@@ -31,6 +31,7 @@
 		4EACC2522A86D056002C4101 /* CollectionViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EACC2512A86D056002C4101 /* CollectionViewFooter.swift */; };
 		4EACC2562A86DFD5002C4101 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EACC2552A86DFD5002C4101 /* Service.swift */; };
 		4EACC2582A86E022002C4101 /* CollectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EACC2572A86E022002C4101 /* CollectionInfo.swift */; };
+		4EBF0C422AA069CE00A16A90 /* RijksmuseumGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EBF0C412AA069CE00A16A90 /* RijksmuseumGateway.swift */; };
 		4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87A2A8346B600648D78 /* AppDelegate.swift */; };
 		4EFCB87F2A8346B600648D78 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */; };
 		4EFCB8842A8346B700648D78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4EFCB8832A8346B700648D78 /* Assets.xcassets */; };
@@ -79,6 +80,7 @@
 		4EACC2512A86D056002C4101 /* CollectionViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFooter.swift; sourceTree = "<group>"; };
 		4EACC2552A86DFD5002C4101 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		4EACC2572A86E022002C4101 /* CollectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionInfo.swift; sourceTree = "<group>"; };
+		4EBF0C412AA069CE00A16A90 /* RijksmuseumGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RijksmuseumGateway.swift; sourceTree = "<group>"; };
 		4EFCB8772A8346B600648D78 /* ProgrammingAssessment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProgrammingAssessment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EFCB87A2A8346B600648D78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4EFCB87E2A8346B600648D78 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
@@ -185,10 +187,18 @@
 				4E349D8C2A8A037200D56CA7 /* RijksmuseumServiceQuery.swift */,
 				4E349D8E2A8A110D00D56CA7 /* RijksmuseumImageQuery.swift */,
 				4E349D8A2A8A013300D56CA7 /* ServiceQuery.swift */,
-				4EACC2572A86E022002C4101 /* CollectionInfo.swift */,
-				4E349D972A8A8AAB00D56CA7 /* ArtDetailsInfo.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		4EBF0C432AA0A0D200A16A90 /* Gateway */ = {
+			isa = PBXGroup;
+			children = (
+				4EACC2572A86E022002C4101 /* CollectionInfo.swift */,
+				4E349D972A8A8AAB00D56CA7 /* ArtDetailsInfo.swift */,
+				4EBF0C412AA069CE00A16A90 /* RijksmuseumGateway.swift */,
+			);
+			path = Gateway;
 			sourceTree = "<group>";
 		};
 		4EFCB86E2A8346B600648D78 = {
@@ -221,6 +231,7 @@
 				4E349D812A8933F100D56CA7 /* ArtDetails */,
 				4EFCB8852A8346B700648D78 /* LaunchScreen.storyboard */,
 				4EFCB8882A8346B700648D78 /* Info.plist */,
+				4EBF0C432AA0A0D200A16A90 /* Gateway */,
 			);
 			path = ProgrammingAssessment;
 			sourceTree = "<group>";
@@ -362,6 +373,7 @@
 				4EFCB87B2A8346B600648D78 /* AppDelegate.swift in Sources */,
 				4EACC2522A86D056002C4101 /* CollectionViewFooter.swift in Sources */,
 				4EFCB8AD2A834F2600648D78 /* CollectionRouter.swift in Sources */,
+				4EBF0C422AA069CE00A16A90 /* RijksmuseumGateway.swift in Sources */,
 				4E349D8D2A8A037200D56CA7 /* RijksmuseumServiceQuery.swift in Sources */,
 				4EACC2562A86DFD5002C4101 /* Service.swift in Sources */,
 				4EFCB8AB2A834E6400648D78 /* CollectionPresenter.swift in Sources */,

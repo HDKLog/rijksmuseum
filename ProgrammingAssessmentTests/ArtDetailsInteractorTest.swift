@@ -2,14 +2,38 @@ import XCTest
 
 @testable import ProgrammingAssessment
 class ArtDetailsInteractorTest: XCTestCase {
-    class Service: ServiceLoading {
+    class Gateway: ArtGateway {
 
-        var getDataCalled: Bool { getDataCalls > 0 }
-        var getDataCalls: Int = 0
-        var getDataClosure: (ServiceQuery, @escaping ServiceLoadingResultHandler) -> Void = { _, _ in }
-        func getData(query: ServiceQuery, completion: @escaping ServiceLoadingResultHandler) {
-            getDataCalls += 1
-            getDataClosure(query, completion)
+        var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
+        var loadCollectionCalls: Int = 0
+        var loadCollectionClosure: (Int, Int, CollectionLoadingResultHandler) -> Void = {_, _, _ in }
+        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
+            loadCollectionCalls += 1
+            loadCollectionClosure(page, count, completion)
+        }
+
+        var loadCollectionImageDataCalled: Bool { loadCollectionImageDataCalls > 0 }
+        var loadCollectionImageDataCalls: Int = 0
+        var loadCollectionImageDataClosure: (URL, CollectionImageLoadingResultHandler) -> Void = {_, _ in }
+        func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+            loadCollectionImageDataCalls += 1
+            loadCollectionImageDataClosure(url, completion)
+        }
+
+        var loadArtDetailsCalled: Bool { loadArtDetailsCalls > 0 }
+        var loadArtDetailsCalls: Int = 0
+        var loadArtDetailsClosure: (String, ArtDetailsLoadingResultHandler) -> Void = {_, _ in }
+        func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+            loadArtDetailsCalls += 1
+            loadArtDetailsClosure(artId, completion)
+        }
+
+        var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
+        var loadArtDetailsImageDataCalls: Int = 0
+        var loadArtDetailsImageDataClosure: (URL, ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
+        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+            loadArtDetailsImageDataCalls += 1
+            loadArtDetailsImageDataClosure(url, completion)
         }
     }
 
@@ -37,41 +61,41 @@ class ArtDetailsInteractorTest: XCTestCase {
 
     var artDetails: ArtDetails { artDetailsInfo.artDetails }
 
-    func makeSut(service: ServiceLoading) -> ArtDetailsInteractor {
-        ArtDetailsInteractor(service: service)
+    func makeSut(gateway: Gateway) -> ArtDetailsInteractor {
+        ArtDetailsInteractor(gateway: gateway)
     }
 
     func test_artDetailsInteractor_onLoadArtDetails_tellsServiceToLoadCollection() {
-        let service = Service()
-        let sut = makeSut(service: service)
+        let gateway = Gateway()
+        let sut = makeSut(gateway: gateway)
 
         sut.loadArtDetails(artId: "id"){_ in }
 
-        XCTAssertTrue(service.getDataCalled)
+        XCTAssertTrue(gateway.loadArtDetailsCalled)
     }
 
     func test_artDetailsInteractor_onLoadArtDetails_tellsServiceToLoadArtDetails() {
         let artId = "id"
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
+        var loadingArtId: String?
+        let gateway = Gateway()
+        gateway.loadArtDetailsClosure = {id, _ in
+            loadingArtId = id
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         sut.loadArtDetails(artId: artId) {_ in }
 
-        XCTAssertEqual(serviceQuery?.getUrl()?.lastPathComponent, artId)
+        XCTAssertEqual(loadingArtId, artId)
     }
 
     func test_artDetailsInteractor_onLoadArtDetails_onSuccessGivesArtDetails() {
-        let data = try! JSONEncoder().encode(artDetailsInfo)
+        let details = artDetailsInfo.artDetails
         var result: ArtDetailsLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.success(data))
+        let gateway = Gateway()
+        gateway.loadArtDetailsClosure = {_, completion in
+            completion(.success(details))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadArtDetails(artId: "id") {
@@ -80,17 +104,17 @@ class ArtDetailsInteractorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(result, .success(artDetails))
+        XCTAssertEqual(result, .success(details))
     }
 
     func test_artDetailsInteractor_onLoadArtDetails_onFailureGivesError() {
         let error = ServiceLoadingError.invalidQuery
         var result: ArtDetailsLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.failure(error))
+        let gateway = Gateway()
+        gateway.loadArtDetailsClosure = { _, completion in
+            completion(.failure(.serviceError(error)))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadArtDetails(artId: "id") {
@@ -105,16 +129,16 @@ class ArtDetailsInteractorTest: XCTestCase {
     func test_artDetailsInteractor_onLoadImage_tellsServiceToLoadUrl() {
         let urlString = "https://lh3.googleusercontent.com/J-mxAE7CPu-DXIOx4QKBtb0GC4ud37da1QK7CzbTIDswmvZHXhLm4Tv2-1H3iBXJWAW_bHm7dMl3j5wv_XiWAg55VOM=s0"
         let url = URL(string:urlString)!
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
+        var loadingUrl: URL?
+        let gateway = Gateway()
+        gateway.loadArtDetailsImageDataClosure = { url, _ in
+            loadingUrl = url
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         sut.loadArtDetailsImageData(from: url) { _ in }
 
-        XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains(urlString) == true)
+        XCTAssertEqual(loadingUrl, url)
     }
 
     func test_artDetailsInteractor_onLoadImage_onSuccessGivesImageData() {
@@ -122,11 +146,11 @@ class ArtDetailsInteractorTest: XCTestCase {
         let url = URL(string:urlString)!
         let imageData = Data(count: 2)
         var loadedImageResult: ArtDetailsImageLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
+        let gateway = Gateway()
+        gateway.loadArtDetailsImageDataClosure = { url, completion in
             completion(.success(imageData))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadArtDetailsImageData(from: url) {
@@ -143,11 +167,11 @@ class ArtDetailsInteractorTest: XCTestCase {
         let url = URL(string:urlString)!
         let error = ServiceLoadingError.invalidQuery
         var loadedImageResult: ArtDetailsImageLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.failure(error))
+        let gateway = Gateway()
+        gateway.loadArtDetailsImageDataClosure = { url, completion in
+            completion(.failure(.serviceError(error)))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadArtDetailsImageData(from: url) {

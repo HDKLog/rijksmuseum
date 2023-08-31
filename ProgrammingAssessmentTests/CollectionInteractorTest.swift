@@ -3,66 +3,89 @@ import XCTest
 @testable import ProgrammingAssessment
 final class CollectionInteractorTest: XCTestCase {
 
-    class Service: ServiceLoading {
+    class Gateway: ArtGateway {
 
-        var getDataCalled: Bool { getDataCalls > 0 }
-        var getDataCalls: Int = 0
-        var getDataClosure: (ServiceQuery, @escaping ServiceLoadingResultHandler) -> Void = { _, _ in }
-        func getData(query: ServiceQuery, completion: @escaping ServiceLoadingResultHandler) {
-            getDataCalls += 1
-            getDataClosure(query, completion)
+        var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
+        var loadCollectionCalls: Int = 0
+        var loadCollectionClosure: (Int, Int, CollectionLoadingResultHandler) -> Void = {_, _, _ in }
+        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
+            loadCollectionCalls += 1
+            loadCollectionClosure(page, count, completion)
+        }
+
+        var loadCollectionImageDataCalled: Bool { loadCollectionImageDataCalls > 0 }
+        var loadCollectionImageDataCalls: Int = 0
+        var loadCollectionImageDataClosure: (URL, CollectionImageLoadingResultHandler) -> Void = {_, _ in }
+        func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+            loadCollectionImageDataCalls += 1
+            loadCollectionImageDataClosure(url, completion)
+        }
+
+        var loadArtDetailsCalled: Bool { loadArtDetailsCalls > 0 }
+        var loadArtDetailsCalls: Int = 0
+        var loadArtDetailsClosure: (String, ArtDetailsLoadingResultHandler) -> Void = {_, _ in }
+        func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+            loadArtDetailsCalls += 1
+            loadArtDetailsClosure(artId, completion)
+        }
+
+        var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
+        var loadArtDetailsImageDataCalls: Int = 0
+        var loadArtDetailsImageDataClosure: (URL, ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
+        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+            loadArtDetailsImageDataCalls += 1
+            loadArtDetailsImageDataClosure(url, completion)
         }
     }
 
-    func makeSut(service: ServiceLoading) -> CollectionInteractor {
-        CollectionInteractor(service: service)
+    func makeSut(gateway: Gateway) -> CollectionInteractor {
+        CollectionInteractor(gateway: gateway)
     }
 
     func test_collectionInteractor_onLoadCollection_tellsServiceToLoadCollection() {
-        let service = Service()
-        let sut = makeSut(service: service)
+        let gateway = Gateway()
+        let sut = makeSut(gateway: gateway)
 
         sut.loadCollection(page: 0, count: 0) {_ in }
 
-        XCTAssertTrue(service.getDataCalled)
+        XCTAssertTrue(gateway.loadCollectionCalled)
     }
 
     func test_collectionInteractor_onLoadCollection_tellsServiceToLoadCollectionPage() {
         let pageToLoad = 1
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
+        var loadedPage: Int?
+        let gateway = Gateway()
+        gateway.loadCollectionClosure = { page, count, completion in
+            loadedPage = page
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         sut.loadCollection(page: pageToLoad, count: 0) {_ in }
 
-        XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains("p=1") == true)
+        XCTAssertEqual(loadedPage, pageToLoad)
     }
 
     func test_collectionInteractor_onLoadCollection_tellsServiceToLoadCollectionPageSize() {
         let pageSizeToLoad = 1
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
+        var loadedPageSize: Int?
+        let gateway = Gateway()
+        gateway.loadCollectionClosure = { page, count, completion in
+            loadedPageSize = count
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         sut.loadCollection(page: 0, count: pageSizeToLoad) {_ in }
 
-        XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains("ps=1") == true)
+        XCTAssertEqual(loadedPageSize, pageSizeToLoad)
     }
 
     func test_collectionInteractor_onLoadCollection_onSuccessGivesCollectionPage() {
-        let collectionData = try! JSONEncoder().encode(CollectionInfo.mocked)
         var collectionPageResult: CollectionLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.success(collectionData))
+        let gateway = Gateway()
+        gateway.loadCollectionClosure = { page, count, completion in
+            completion(.success(.mocked))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadCollection(page: 0, count: 3) {
@@ -77,11 +100,11 @@ final class CollectionInteractorTest: XCTestCase {
     func test_collectionInteractor_onLoadCollection_onFailureGivesError() {
         let error = ServiceLoadingError.invalidQuery
         var collectionPageResult: CollectionLoadingResult?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.failure(error))
+        let gateway = Gateway()
+        gateway.loadCollectionClosure = { _, _, completion in
+            completion(.failure(.serviceError(error)))
         }
-        let sut = makeSut(service: service)
+        let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
         sut.loadCollection(page: 0, count: 3) {
@@ -95,51 +118,27 @@ final class CollectionInteractorTest: XCTestCase {
 
     func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadUrl() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
-        let urlString: String = {
-            var str = url.absoluteString
-            str.removeLast()
-            return str
-        }()
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
-        }
-        let sut = makeSut(service: service)
+        let gateway = Gateway()
+        let sut = makeSut(gateway: gateway)
 
-        sut.loadCollectionItemImageData(from: url, scale: .thumbnail) { _ in }
+        sut.loadCollectionItemImageData(from: url) { _ in }
 
-        XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains(urlString) == true)
-    }
-
-    func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadScale() {
-        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
-        let scale = CollectionImageLoadingScale.thumbnail
-        var serviceQuery: ServiceQuery?
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            serviceQuery = query
-        }
-        let sut = makeSut(service: service)
-
-        sut.loadCollectionItemImageData(from: url, scale: scale) { _ in }
-
-        XCTAssertTrue(serviceQuery?.getUrl()?.absoluteString.contains("s\(scale.rawValue)") == true)
+        XCTAssertTrue(gateway.loadCollectionImageDataCalled)
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onSuccessGivesImageData() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let imageData = Data(count: 2)
         var loadedImageResult: CollectionImageLoadingResult?
-        let scale = CollectionImageLoadingScale.thumbnail
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.success(imageData))
+        let gateway = Gateway()
+        let sut = makeSut(gateway: gateway)
+
+        gateway.loadCollectionImageDataClosure = { _, complition in
+            complition(.success(imageData))
         }
-        let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url, scale: scale) {
+        sut.loadCollectionItemImageData(from: url) {
             loadedImageResult = $0
             expectation.fulfill()
         }
@@ -152,15 +151,16 @@ final class CollectionInteractorTest: XCTestCase {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
         let error = ServiceLoadingError.invalidQuery
         var loadedImageResult: CollectionImageLoadingResult?
-        let scale = CollectionImageLoadingScale.thumbnail
-        let service = Service()
-        service.getDataClosure = { query, completion in
-            completion(.failure(error))
+
+        let gateway = Gateway()
+        let sut = makeSut(gateway: gateway)
+
+        gateway.loadCollectionImageDataClosure = { _, completion in
+            completion(.failure(.serviceError(error)))
         }
-        let sut = makeSut(service: service)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url, scale: scale) {
+        sut.loadCollectionItemImageData(from: url) {
             loadedImageResult = $0
             expectation.fulfill()
         }
