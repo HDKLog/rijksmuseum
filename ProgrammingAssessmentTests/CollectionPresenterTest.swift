@@ -212,7 +212,6 @@ final class CollectionPresenterTest: XCTestCase {
             if loadedPage == nil {
                 loadedPage = page
                 completion(.failure(.loading(error: .serviceError(.invalidQuery))))
-                return
             }
         }
         let sut = makeSut(view: view, interactor: interactor)
@@ -221,7 +220,23 @@ final class CollectionPresenterTest: XCTestCase {
 
         XCTAssertTrue(view.displayErrorCalled)
     }
-    
+
+    func test_collectionPresenter_onLoadNextPage_onLoadingFailureRetryToLoadNextPage() {
+        var loadedPage: Int?
+        let view = View()
+        let interactor = Interactor()
+        interactor.loadCollectionClosure = { page, _, completion in
+            if loadedPage == nil {
+                loadedPage = page
+                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+            }
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        XCTAssertEqual(interactor.loadCollectionCalls, 2)
+    }
 
     func test_collectionPresenter_onLoadCollection_configureView() {
         let view = View()
@@ -301,6 +316,28 @@ final class CollectionPresenterTest: XCTestCase {
         sut.itemModel(on: 0, at: 0) { _ in }
 
         XCTAssertTrue(view.displayErrorCalled)
+    }
+
+    func test_collectionPresenter_onItemModel_onFailureRetryToLoadItemModel() {
+        let view = View()
+        let interactor = Interactor()
+        var loadingUrl: URL?
+        interactor.loadCollectionClosure = { _, _, completion in
+            completion(.success(.mocked))
+        }
+        interactor.loadCollectionItemImageDataClosure = { url, complition in
+            if loadingUrl == nil {
+                loadingUrl = url
+                complition(.failure(.loading(error: .serviceError(.invalidQuery))))
+            }
+        }
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadNextPage()
+
+        sut.itemModel(on: 0, at: 0) { _ in }
+
+        XCTAssertEqual(interactor.loadCollectionItemImageDataCalls, 2)
     }
 
     func test_collectionPresenter_onHeaderModel_returnsHeaderModel() {

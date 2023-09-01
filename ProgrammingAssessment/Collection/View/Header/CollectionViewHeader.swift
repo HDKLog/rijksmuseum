@@ -1,7 +1,7 @@
 import UIKit
 
 class CollectionViewHeader: UICollectionReusableView {
-    static let resuableId = "CollectionViewHeader"
+    static let reusableId = "CollectionViewHeader"
 
     lazy var textLabel : UILabel = {
         let label = UILabel()

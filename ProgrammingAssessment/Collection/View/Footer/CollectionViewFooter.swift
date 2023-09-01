@@ -2,7 +2,7 @@ import UIKit
 
 class CollectionViewFooter: UICollectionReusableView {
 
-    static let resuableId = "CollectionViewFooter"
+    static let reusableId = "CollectionViewFooter"
 
     var indicator : UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()

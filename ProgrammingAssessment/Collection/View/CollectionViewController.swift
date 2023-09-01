@@ -44,9 +44,9 @@ class CollectionViewController: UIViewController, CollectionView {
         layout.estimatedItemSize = .zero
 
         let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.resuableId)
-        collectionView.register(CollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeader.resuableId)
-        collectionView.register(CollectionViewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooter.resuableId)
+        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.reusableId)
+        collectionView.register(CollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeader.reusableId)
+        collectionView.register(CollectionViewFooter.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooter.reusableId)
         collectionView.backgroundColor = DesignBook.Color.Background.list.uiColor()
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self
@@ -157,7 +157,7 @@ extension CollectionViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.resuableId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.reusableId, for: indexPath)
         if let collectionCell = cell as? CollectionViewCell {
 
             collectionCell.reset()
@@ -199,7 +199,7 @@ extension CollectionViewController: UICollectionViewDataSource {
 
     private func collectionViewHeader(for collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader,
-                                                                     withReuseIdentifier: CollectionViewHeader.resuableId,
+                                                                     withReuseIdentifier: CollectionViewHeader.reusableId,
                                                                      for: indexPath)
         if let collectionHeader = header as? CollectionViewHeader {
             presenter?.headerModel(on: indexPath.section) { model in
@@ -212,7 +212,7 @@ extension CollectionViewController: UICollectionViewDataSource {
 
     private func collectionViewFooter(for collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionReusableView {
         let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter,
-                                                                     withReuseIdentifier: CollectionViewFooter.resuableId,
+                                                                     withReuseIdentifier: CollectionViewFooter.reusableId,
                                                                      for: indexPath)
         if let collectionViewFooter = footer as? CollectionViewFooter {
 

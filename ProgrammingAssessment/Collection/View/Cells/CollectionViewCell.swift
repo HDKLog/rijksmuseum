@@ -3,7 +3,7 @@ import SkeletonView
 
 class CollectionViewCell: UICollectionViewCell {
 
-    static let resuableId = "CollectionViewCell"
+    static let reusableId = "CollectionViewCell"
 
     let imageView: UIImageView = {
         let imageView = UIImageView()
