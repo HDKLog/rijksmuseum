@@ -127,6 +127,26 @@ final class CollectionPresenterTest: XCTestCase {
         XCTAssertEqual(view.updateCollectionCalls, 1)
     }
 
+    func test_collectionPresenter_onLoadCollection_onLoadingSuccessConfiguresViewToDisplaySuccess() {
+        let view = View()
+        let interactor = Interactor()
+        var viewModel: CollectionViewModel?
+        interactor.loadCollectionClosure = { _, _, completion in
+            viewModel = nil
+            completion(.success(.mocked))
+        }
+
+        view.configureClosure = { model in
+            viewModel = model
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertNotNil(viewModel)
+    }
+
     func test_collectionPresenter_onLoadCollection_onLoadingFailureDoNotIncreaseCurrentPage() {
         var loadedPage: Int?
         let view = View()
@@ -140,6 +160,26 @@ final class CollectionPresenterTest: XCTestCase {
         sut.loadCollection()
 
         XCTAssertEqual(sut.currentPage, loadedPage)
+    }
+
+    func test_collectionPresenter_onLoadCollection_onLoadingFailureConfiguresViewToDisplayFailure() {
+        let view = View()
+        let interactor = Interactor()
+        var viewModel: CollectionViewModel?
+        interactor.loadCollectionClosure = { _, _, completion in
+            viewModel = nil
+            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+        }
+
+        view.configureClosure = { model in
+            viewModel = model
+        }
+
+        let sut = makeSut(view: view, interactor: interactor)
+
+        sut.loadCollection()
+
+        XCTAssertNotNil(viewModel)
     }
 
     func test_collectionPresenter_onLoadCollection_onLoadingFailureTellsViewToDisplayError() {
