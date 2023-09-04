@@ -1,38 +1,42 @@
 import Foundation
+import Combine
 
 enum ServiceLoadingError: Error {
     case invalidQuery
     case requestError(Error)
 }
 
-typealias ServiceLoadingResult = (Result<Data, ServiceLoadingError>)
-typealias ServiceLoadingResultHandler = (ServiceLoadingResult) -> Void
-
 protocol ServiceLoading {
-    func getData(query: ServiceQuery, completion: @escaping ServiceLoadingResultHandler)
+    func getData(query: ServiceQuery) -> AnyPublisher<Data, ServiceLoadingError>
 }
 
 class Service: ServiceLoading {
 
     let session = URLSession.shared
 
-    func getData(query: ServiceQuery, completion: @escaping ServiceLoadingResultHandler) {
-        guard let url = query.getUrl()
-        else {
-            completion(.failure(.invalidQuery))
-            return
-        }
+    var cancelables: [AnyCancellable] = []
 
-        let request = URLRequest(url: url)
-        let task = session.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil
+    func getData(query: ServiceQuery) -> AnyPublisher<Data, ServiceLoadingError> {
+
+        Just(query.getUrl()).flatMap { [weak self] result -> AnyPublisher<Data, ServiceLoadingError> in
+            guard let url = result
             else {
-                completion(.failure(.requestError(error!)))
-                return
+                return Fail<Data, ServiceLoadingError>(error: ServiceLoadingError.invalidQuery)
+                    .eraseToAnyPublisher()
             }
-            completion(.success(data))
+
+            guard let self = self
+            else {
+                return Empty<Data, ServiceLoadingError>(completeImmediately: true).eraseToAnyPublisher()
+            }
+
+            return self.session
+                .dataTaskPublisher(for: url)
+                .map(\.data)
+                .mapError(ServiceLoadingError.requestError)
+                .eraseToAnyPublisher()
         }
-        task.resume()
+        .eraseToAnyPublisher()
     }
 }
 
