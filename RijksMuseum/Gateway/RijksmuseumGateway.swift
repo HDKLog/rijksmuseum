@@ -59,7 +59,7 @@ class RijksmuseumArtGateway: ArtGateway {
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
         let query = RijksmuseumServiceQuery(request: .all).withPage(page: page).withPageSize(pageSize: count)
 
-        let publisher: AnyPublisher<Data, CollectionLoadingError> = service.getData(query: query)
+        let publisher = service.getData(query: query)
             .mapError(CollectionLoadingError.serviceError)
             .eraseToAnyPublisher()
 
@@ -67,19 +67,19 @@ class RijksmuseumArtGateway: ArtGateway {
         publisher
             .receive(on: DispatchQueue.main)
             .flatMap { data -> AnyPublisher<CollectionInfo, CollectionLoadingError> in
-            do {
-                let collectionInfo = try JSONDecoder().decode(CollectionInfo.self, from: data)
-                return Just(collectionInfo).setFailureType(to: CollectionLoadingError.self).eraseToAnyPublisher()
-            } catch {
-                return Fail<CollectionInfo, CollectionLoadingError>(error: .parsingError(error)).eraseToAnyPublisher()
+                do {
+                    let collectionInfo = try JSONDecoder().decode(CollectionInfo.self, from: data)
+                    return Just(collectionInfo).setFailureType(to: CollectionLoadingError.self).eraseToAnyPublisher()
+                } catch {
+                    return Fail<CollectionInfo, CollectionLoadingError>(error: .parsingError(error)).eraseToAnyPublisher()
+                }
             }
-        }
-        .sink(receiveCompletion: {
-            if case let .failure(error) = $0 { completion(.failure(error)) }
-        }, receiveValue: {
-            completion(.success($0))
-        })
-        .store(in: &cancelables)
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 { completion(.failure(error)) }
+            }, receiveValue: {
+                completion(.success($0))
+            })
+            .store(in: &cancelables)
     }
 
     func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
@@ -96,26 +96,26 @@ class RijksmuseumArtGateway: ArtGateway {
     func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
         let query = RijksmuseumServiceQuery(request: .collection(artId))
 
-        let publisher: AnyPublisher<Data, ArtDetailsLoadingError> = service.getData(query: query)
+        let publisher = service.getData(query: query)
             .mapError(ArtDetailsLoadingError.serviceError)
             .eraseToAnyPublisher()
 
         publisher
             .receive(on: DispatchQueue.main)
             .flatMap { data -> AnyPublisher<ArtDetailsInfo, ArtDetailsLoadingError> in
-            do {
-                let artInfo = try JSONDecoder().decode(ArtDetailsInfo.self, from: data)
-                return Just(artInfo).setFailureType(to: ArtDetailsLoadingError.self).eraseToAnyPublisher()
-            } catch {
-                return Fail<ArtDetailsInfo, ArtDetailsLoadingError>(error: .parsingError(error)).eraseToAnyPublisher()
+                do {
+                    let artInfo = try JSONDecoder().decode(ArtDetailsInfo.self, from: data)
+                    return Just(artInfo).setFailureType(to: ArtDetailsLoadingError.self).eraseToAnyPublisher()
+                } catch {
+                    return Fail<ArtDetailsInfo, ArtDetailsLoadingError>(error: .parsingError(error)).eraseToAnyPublisher()
+                }
             }
-        }
-        .sink(receiveCompletion: {
-            if case let .failure(error) = $0 { completion(.failure(error)) }
-        }, receiveValue: {
-            completion(.success($0))
-        })
-        .store(in: &cancelables)
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 { completion(.failure(error)) }
+            }, receiveValue: {
+                completion(.success($0))
+            })
+            .store(in: &cancelables)
 
     }
 
