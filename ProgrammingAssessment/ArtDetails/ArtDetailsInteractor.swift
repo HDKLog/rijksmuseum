@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 enum ArtDetailsError: Error {
     case loading(error: ArtDetailsLoadingError)
@@ -30,31 +31,38 @@ class ArtDetailsInteractor: ArtDetailsInteracting {
 
     let gateway: ArtGateway
 
+    var cancelables: [AnyCancellable] = []
+
     init(gateway: ArtGateway) {
         self.gateway = gateway
     }
 
     func loadArtDetails(artId: String, completion: @escaping ArtDetailsResultHandler) {
-        gateway.loadArtDetails(artId: artId) { result in
-            switch result {
-            case let .success(info):
-                let details = info.artDetails
-                completion(.success(details))
-            case let .failure(error):
-                completion(.failure(.loading(error: error)))
-            }
-        }
+        gateway.loadArtDetails(artId: artId)
+            .receive(on: DispatchQueue.main)
+            .mapError(ArtDetailsError.loading)
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 {
+                    completion(.failure(error))
+                }
+            }, receiveValue: {
+                completion(.success($0.artDetails))
+            })
+            .store(in: &cancelables)
     }
 
     func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageResultHandler) {
-        gateway.loadArtDetailsImageData(from: url) { result in
-            switch result {
-            case let .success(data):
-                completion(.success(data))
-            case let .failure(error):
-                completion(.failure(.loading(error: error)))
-            }
-        }
+        gateway.loadArtDetailsImageData(from: url)
+            .receive(on: DispatchQueue.main)
+            .mapError(ArtDetailsImageError.loading)
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 {
+                    completion(.failure(error))
+                }
+            }, receiveValue: {
+                completion(.success($0))
+            })
+            .store(in: &cancelables)
     }
 
 }

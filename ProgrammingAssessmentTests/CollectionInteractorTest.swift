@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 
 @testable import ProgrammingAssessment
 final class CollectionInteractorTest: XCTestCase {
@@ -7,34 +8,34 @@ final class CollectionInteractorTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
-        var loadCollectionClosure: (Int, Int, CollectionLoadingResultHandler) -> Void = {_, _, _ in }
-        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
+        var loadCollectionClosure: (Int, Int) -> AnyPublisher<CollectionInfo, CollectionLoadingError> = {_, _ in Empty().eraseToAnyPublisher() }
+        func loadCollection(page: Int, count: Int) -> AnyPublisher<CollectionInfo, CollectionLoadingError> {
             loadCollectionCalls += 1
-            loadCollectionClosure(page, count, completion)
+            return loadCollectionClosure(page, count)
         }
 
         var loadCollectionImageDataCalled: Bool { loadCollectionImageDataCalls > 0 }
         var loadCollectionImageDataCalls: Int = 0
-        var loadCollectionImageDataClosure: (URL, CollectionImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+        var loadCollectionImageDataClosure: (URL) -> AnyPublisher<Data, CollectionImageLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadCollectionImageData(from url: URL) -> AnyPublisher<Data, CollectionImageLoadingError> {
             loadCollectionImageDataCalls += 1
-            loadCollectionImageDataClosure(url, completion)
+            return loadCollectionImageDataClosure(url)
         }
 
         var loadArtDetailsCalled: Bool { loadArtDetailsCalls > 0 }
         var loadArtDetailsCalls: Int = 0
-        var loadArtDetailsClosure: (String, ArtDetailsLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+        var loadArtDetailsClosure: (String) -> AnyPublisher<ArtDetailsInfo, ArtDetailsLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadArtDetails(artId: String) -> AnyPublisher<ArtDetailsInfo, ArtDetailsLoadingError> {
             loadArtDetailsCalls += 1
-            loadArtDetailsClosure(artId, completion)
+            return loadArtDetailsClosure(artId)
         }
 
         var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
         var loadArtDetailsImageDataCalls: Int = 0
-        var loadArtDetailsImageDataClosure: (URL, ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+        var loadArtDetailsImageDataClosure: (URL) -> AnyPublisher<Data, ArtDetailsImageLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadArtDetailsImageData(from url: URL) -> AnyPublisher<Data, ArtDetailsImageLoadingError> {
             loadArtDetailsImageDataCalls += 1
-            loadArtDetailsImageDataClosure(url, completion)
+            return loadArtDetailsImageDataClosure(url)
         }
     }
 
@@ -55,8 +56,9 @@ final class CollectionInteractorTest: XCTestCase {
         let pageToLoad = 1
         var loadedPage: Int?
         let gateway = Gateway()
-        gateway.loadCollectionClosure = { page, count, completion in
+        gateway.loadCollectionClosure = { page, count in
             loadedPage = page
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -69,8 +71,9 @@ final class CollectionInteractorTest: XCTestCase {
         let pageSizeToLoad = 1
         var loadedPageSize: Int?
         let gateway = Gateway()
-        gateway.loadCollectionClosure = { page, count, completion in
+        gateway.loadCollectionClosure = { page, count in
             loadedPageSize = count
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -85,8 +88,8 @@ final class CollectionInteractorTest: XCTestCase {
         let collectionInfo = CollectionInfo.mocked
         let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInfo.collectionItems)
         let gateway = Gateway()
-        gateway.loadCollectionClosure = { page, count, completion in
-            completion(.success(collectionInfo))
+        gateway.loadCollectionClosure = { page, count in
+            return Just(collectionInfo).setFailureType(to: CollectionLoadingError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -104,8 +107,8 @@ final class CollectionInteractorTest: XCTestCase {
         let error = ServiceLoadingError.invalidQuery
         var collectionPageResult: CollectionResult?
         let gateway = Gateway()
-        gateway.loadCollectionClosure = { _, _, completion in
-            completion(.failure(.serviceError(error)))
+        gateway.loadCollectionClosure = { _, _ in
+            Fail(error: .serviceError(error)).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -136,8 +139,8 @@ final class CollectionInteractorTest: XCTestCase {
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
-        gateway.loadCollectionImageDataClosure = { _, complition in
-            complition(.success(imageData))
+        gateway.loadCollectionImageDataClosure = { _ in
+            Just(imageData).setFailureType(to: CollectionImageLoadingError.self).eraseToAnyPublisher()
         }
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
@@ -158,8 +161,8 @@ final class CollectionInteractorTest: XCTestCase {
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
-        gateway.loadCollectionImageDataClosure = { _, completion in
-            completion(.failure(.serviceError(error)))
+        gateway.loadCollectionImageDataClosure = { _ in
+            Fail(error: .serviceError(error)).eraseToAnyPublisher()
         }
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
