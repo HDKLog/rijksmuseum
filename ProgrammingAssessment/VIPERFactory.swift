@@ -7,11 +7,12 @@ protocol VIPERFactory {
 
 extension AppDelegate: VIPERFactory {
 
+    private var service: ServiceLoading { Service() }
+    private var gateway: ArtGateway { RijksmuseumArtGateway(service: service) }
+
     func createCollection(endView: UIViewController ,routingEndpoint: CollectionRoutingEndpoint) -> CollectionViewController {
-        let view = CollectionViewController()
-        let service = Service()
-        let gateway = RijksmuseumArtGateway(service: service)
         let interactor = CollectionInteractor(gateway: gateway)
+        let view = CollectionViewController()
         let presenter = CollectionPresenter(view: view, interactor: interactor)
         let router = CollectionRouter(rootView: view, endView: endView, endpoint: routingEndpoint)
         presenter.router = router
@@ -21,10 +22,8 @@ extension AppDelegate: VIPERFactory {
     }
 
     func createArtDetails() -> ArtDetailsViewController {
-        let view = ArtDetailsViewController()
-        let service = Service()
-        let gateway = RijksmuseumArtGateway(service: service)
         let interactor = ArtDetailsInteractor(gateway: gateway)
+        let view = ArtDetailsViewController()
         let presenter = ArtDetailsPresenter(view: view, interactor: interactor)
         let router = ArtDetailsRouter(artDetailsViewController: view)
         presenter.router = router
