@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 
 @testable import RijksMuseum
 class ArtDetailsInteractorTest: XCTestCase {
@@ -6,35 +7,36 @@ class ArtDetailsInteractorTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
-        var loadCollectionClosure: (Int, Int, CollectionLoadingResultHandler) -> Void = {_, _, _ in }
-        func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler) {
+        var loadCollectionClosure: (Int, Int) -> AnyPublisher<CollectionInfo, CollectionLoadingError> = {_, _ in Empty().eraseToAnyPublisher() }
+        func loadCollection(page: Int, count: Int) -> AnyPublisher<CollectionInfo, CollectionLoadingError> {
             loadCollectionCalls += 1
-            loadCollectionClosure(page, count, completion)
+            return loadCollectionClosure(page, count)
         }
 
         var loadCollectionImageDataCalled: Bool { loadCollectionImageDataCalls > 0 }
         var loadCollectionImageDataCalls: Int = 0
-        var loadCollectionImageDataClosure: (URL, CollectionImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler) {
+        var loadCollectionImageDataClosure: (URL) -> AnyPublisher<Data, CollectionImageLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadCollectionImageData(from url: URL) -> AnyPublisher<Data, CollectionImageLoadingError> {
             loadCollectionImageDataCalls += 1
-            loadCollectionImageDataClosure(url, completion)
+            return loadCollectionImageDataClosure(url)
         }
 
         var loadArtDetailsCalled: Bool { loadArtDetailsCalls > 0 }
         var loadArtDetailsCalls: Int = 0
-        var loadArtDetailsClosure: (String, ArtDetailsLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetails(artId: String, completion: @escaping ArtDetailsLoadingResultHandler) {
+        var loadArtDetailsClosure: (String) -> AnyPublisher<ArtDetailsInfo, ArtDetailsLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadArtDetails(artId: String) -> AnyPublisher<ArtDetailsInfo, ArtDetailsLoadingError> {
             loadArtDetailsCalls += 1
-            loadArtDetailsClosure(artId, completion)
+            return loadArtDetailsClosure(artId)
         }
 
         var loadArtDetailsImageDataCalled: Bool { loadArtDetailsImageDataCalls > 0 }
         var loadArtDetailsImageDataCalls: Int = 0
-        var loadArtDetailsImageDataClosure: (URL, ArtDetailsImageLoadingResultHandler) -> Void = {_, _ in }
-        func loadArtDetailsImageData(from url: URL, completion: @escaping ArtDetailsImageLoadingResultHandler) {
+        var loadArtDetailsImageDataClosure: (URL) -> AnyPublisher<Data, ArtDetailsImageLoadingError> = {_ in Empty().eraseToAnyPublisher() }
+        func loadArtDetailsImageData(from url: URL) -> AnyPublisher<Data, ArtDetailsImageLoadingError> {
             loadArtDetailsImageDataCalls += 1
-            loadArtDetailsImageDataClosure(url, completion)
+            return loadArtDetailsImageDataClosure(url)
         }
+
     }
 
     var artDetails: ArtDetails { ArtDetailsInfo.mocked.artDetails }
@@ -56,8 +58,9 @@ class ArtDetailsInteractorTest: XCTestCase {
         let artId = "id"
         var loadingArtId: String?
         let gateway = Gateway()
-        gateway.loadArtDetailsClosure = {id, _ in
+        gateway.loadArtDetailsClosure = {id in
             loadingArtId = id
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -71,8 +74,8 @@ class ArtDetailsInteractorTest: XCTestCase {
         let details = ArtDetails.mocked
         var result: ArtDetailsResult?
         let gateway = Gateway()
-        gateway.loadArtDetailsClosure = {_, completion in
-            completion(.success(info))
+        gateway.loadArtDetailsClosure = {_ in
+            Just(info).setFailureType(to: ArtDetailsLoadingError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -90,8 +93,8 @@ class ArtDetailsInteractorTest: XCTestCase {
         let error = ServiceLoadingError.invalidQuery
         var result: ArtDetailsResult?
         let gateway = Gateway()
-        gateway.loadArtDetailsClosure = { _, completion in
-            completion(.failure(.serviceError(error)))
+        gateway.loadArtDetailsClosure = { _ in
+            Fail(error: .serviceError(error)).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -110,8 +113,9 @@ class ArtDetailsInteractorTest: XCTestCase {
         let url = URL(string:urlString)!
         var loadingUrl: URL?
         let gateway = Gateway()
-        gateway.loadArtDetailsImageDataClosure = { url, _ in
+        gateway.loadArtDetailsImageDataClosure = { url in
             loadingUrl = url
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -126,8 +130,8 @@ class ArtDetailsInteractorTest: XCTestCase {
         let imageData = Data(count: 2)
         var loadedImageResult: ArtDetailsImageResult?
         let gateway = Gateway()
-        gateway.loadArtDetailsImageDataClosure = { url, completion in
-            completion(.success(imageData))
+        gateway.loadArtDetailsImageDataClosure = { url in
+            Just(imageData).setFailureType(to: ArtDetailsImageLoadingError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 
@@ -147,8 +151,8 @@ class ArtDetailsInteractorTest: XCTestCase {
         let error = ServiceLoadingError.invalidQuery
         var loadedImageResult: ArtDetailsImageResult?
         let gateway = Gateway()
-        gateway.loadArtDetailsImageDataClosure = { url, completion in
-            completion(.failure(.serviceError(error)))
+        gateway.loadArtDetailsImageDataClosure = { url in
+            Fail(error: .serviceError(error)).eraseToAnyPublisher()
         }
         let sut = makeSut(gateway: gateway)
 

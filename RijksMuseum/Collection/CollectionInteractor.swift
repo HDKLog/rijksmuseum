@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 enum CollectionError: Error {
     case loading(error: CollectionLoadingError)
@@ -23,32 +24,40 @@ class CollectionInteractor: CollectionInteracting {
 
     let gateway: ArtGateway
 
+    var cancelables: [AnyCancellable] = []
+
     init(gateway: ArtGateway) {
         self.gateway = gateway
     }
 
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionResultHandler) {
 
-        gateway.loadCollection(page: page, count: count) { result in
-            switch result {
-            case let .success(info):
-                let collectionPage = CollectionPage(title: "Page \(page)", items: info.collectionItems)
-                completion(.success(collectionPage))
-            case let .failure(error):
-                completion(.failure(.loading(error: error)))
-            }
-        }
+        gateway.loadCollection(page: page, count: count)
+            .receive(on: DispatchQueue.main)
+            .mapError(CollectionError.loading)
+            .map { CollectionPage(title: "Page \(page)", items: $0.collectionItems) }
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 {
+                    completion(.failure(error))
+                }
+            }, receiveValue: {
+                completion(.success($0))
+            })
+            .store(in: &cancelables)
     }
 
     func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageDataResultHandler) {
-        gateway.loadCollectionImageData(from: url) { result in
-            switch result {
-            case let .success(data):
-                completion(.success(data))
-            case let .failure(error):
-                completion(.failure(.loading(error: error)))
-            }
-        }
+        gateway.loadCollectionImageData(from: url)
+            .receive(on: DispatchQueue.main)
+            .mapError(CollectionImageDataError.loading)
+            .sink(receiveCompletion: {
+                if case let .failure(error) = $0 {
+                    completion(.failure(error))
+                }
+            }, receiveValue: {
+                completion(.success($0))
+            })
+            .store(in: &cancelables)
     }
 }
 
