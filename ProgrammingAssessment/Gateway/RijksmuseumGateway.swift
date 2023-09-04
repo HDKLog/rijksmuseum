@@ -30,9 +30,6 @@ typealias ArtDetailsLoadingResultHandler = (ArtDetailsLoadingResult) -> Void
 typealias ArtDetailsImageLoadingResult = Result<Data, ArtDetailsImageLoadingError>
 typealias ArtDetailsImageLoadingResultHandler = (ArtDetailsImageLoadingResult) -> Void
 
-typealias ArtImageDataLoadingResult = Result<Data, ServiceLoadingError>
-typealias ArtImageDataLoadingResultHandler = (ArtImageDataLoadingResult) -> Void
-
 protocol ArtGateway {
     func loadCollection(page: Int, count: Int, completion: @escaping CollectionLoadingResultHandler)
     func loadCollectionImageData(from url: URL, completion: @escaping CollectionImageLoadingResultHandler)
@@ -46,6 +43,9 @@ class RijksmuseumArtGateway: ArtGateway {
         case original = 0
         case thumbnail = 400
     }
+    
+    typealias ArtImageDataLoadingResult = Result<Data, ServiceLoadingError>
+    typealias ArtImageDataLoadingResultHandler = (ArtImageDataLoadingResult) -> Void
 
     let service: ServiceLoading
 
