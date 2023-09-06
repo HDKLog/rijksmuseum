@@ -120,7 +120,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_tellsServiceToLoadUrl() {
-        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage!.url!
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
@@ -130,7 +130,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onSuccessGivesImageData() {
-        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage!.url!
         let imageData = Data(count: 2)
         var loadedImageResult: CollectionImageDataResult?
         let gateway = Gateway()
@@ -151,7 +151,7 @@ final class CollectionInteractorTest: XCTestCase {
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onFailureGivesError() {
-        let url = CollectionInfo.mocked.collectionItems.first!.webImage.url!
+        let url = CollectionInfo.mocked.collectionItems.first!.webImage!.url!
         let error = ServiceLoadingError.invalidQuery
         var loadedImageResult: CollectionImageDataResult?
 

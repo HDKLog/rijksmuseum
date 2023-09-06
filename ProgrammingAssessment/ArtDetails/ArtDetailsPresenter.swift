@@ -25,7 +25,7 @@ class ArtDetailsPresenter: ArtDetailsPresenting {
             switch result {
             case let .success(artDetails):
                 self?.view.updateDetails(with: artDetails.artDetailsViewModel)
-                self?.loadImage(url: artDetails.webImage.url)
+                self?.loadImage(url: artDetails.webImage?.url)
             case let .failure(error):
                 self?.view.displayError(error: error)
             }

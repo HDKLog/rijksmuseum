@@ -64,9 +64,16 @@ extension ArtDetailsInfo {
         ArtDetails(id: artObject.id,
                    title: artObject.title,
                    description: artObject.description,
-                   webImage: ArtDetails.Image(guid: artObject.webImage.guid,
-                                              width: artObject.webImage.width,
-                                              height: artObject.webImage.height,
-                                              url: URL(string: artObject.webImage.url)))
+                   webImage: artObject.webImage?.artImage)
+    }
+}
+
+extension ArtDetailsInfo.Art.ImageInfo {
+    typealias Image = ArtDetails.Image
+    var artImage: Image {
+        Image(guid: guid,
+              width: width,
+              height: height,
+              url: URL(string: url))
     }
 }

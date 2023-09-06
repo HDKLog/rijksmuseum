@@ -3,12 +3,12 @@ import Foundation
 struct CollectionInfo: Codable {
     struct Art: Codable {
         struct ImageInfo: Codable {
-            let guid: String
+            let guid: String?
             let offsetPercentageX: Int
             let offsetPercentageY: Int
             let width: Int
             let height: Int
-            let url: String
+            let url: String?
         }
 
         let links: [String : String]
@@ -20,8 +20,8 @@ struct CollectionInfo: Codable {
         let longTitle: String
         let showImage: Bool
         let permitDownload: Bool
-        let webImage: ImageInfo
-        let headerImage: ImageInfo
+        let webImage: ImageInfo?
+        let headerImage: ImageInfo?
         let productionPlaces: [String]
     }
 

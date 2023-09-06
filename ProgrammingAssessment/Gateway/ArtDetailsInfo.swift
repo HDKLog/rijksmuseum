@@ -17,7 +17,7 @@ struct ArtDetailsInfo: Codable {
         var language: String
         var title: String
         var copyrightHolder: String?
-        var webImage: ImageInfo
+        var webImage: ImageInfo?
         var description: String
     }
     
