@@ -39,6 +39,8 @@ final class CollectionInteractorTest: XCTestCase {
         }
     }
 
+    var cancelables: [AnyCancellable] = []
+
     func makeSut(gateway: Gateway) -> CollectionInteractor {
         CollectionInteractor(gateway: gateway)
     }
@@ -47,7 +49,7 @@ final class CollectionInteractorTest: XCTestCase {
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
-        sut.loadCollection(page: 0, count: 0) {_ in }
+        _ = sut.loadCollection(page: 0, count: 0)
 
         XCTAssertTrue(gateway.loadCollectionCalled)
     }
@@ -62,7 +64,7 @@ final class CollectionInteractorTest: XCTestCase {
         }
         let sut = makeSut(gateway: gateway)
 
-        sut.loadCollection(page: pageToLoad, count: 0) {_ in }
+        _ = sut.loadCollection(page: pageToLoad, count: 0)
 
         XCTAssertEqual(loadedPage, pageToLoad)
     }
@@ -77,13 +79,13 @@ final class CollectionInteractorTest: XCTestCase {
         }
         let sut = makeSut(gateway: gateway)
 
-        sut.loadCollection(page: 0, count: pageSizeToLoad) {_ in }
+        _ = sut.loadCollection(page: 0, count: pageSizeToLoad)
 
         XCTAssertEqual(loadedPageSize, pageSizeToLoad)
     }
 
     func test_collectionInteractor_onLoadCollection_onSuccessGivesCollectionPage() {
-        var collectionPageResult: CollectionResult?
+        var collectionPageResult: CollectionPage?
         let page = 0
         let collectionInfo = CollectionInfo.mocked
         let collectionPage = CollectionPage(title: "Page \(page)", items: collectionInfo.collectionItems)
@@ -94,18 +96,23 @@ final class CollectionInteractorTest: XCTestCase {
         let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollection(page: page, count: 3) {
-            collectionPageResult = $0
-            expectation.fulfill()
-        }
+        sut.loadCollection(page: page, count: 3)
+            .flatMap { Just<CollectionPage?>($0).eraseToAnyPublisher() }
+            .catch { _ in Just<CollectionPage?>(nil).eraseToAnyPublisher() }
+            .sink {
+                collectionPageResult = $0
+                expectation.fulfill()
+            }
+            .store(in: &cancelables)
+
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(collectionPageResult, .success(collectionPage))
+        XCTAssertEqual(collectionPageResult, collectionPage)
     }
 
     func test_collectionInteractor_onLoadCollection_onFailureGivesError() {
         let error = ServiceLoadingError.invalidQuery
-        var collectionPageResult: CollectionResult?
+        var collectionPageResult: Subscribers.Completion<CollectionError>?
         let gateway = Gateway()
         gateway.loadCollectionClosure = { _, _ in
             Fail(error: .serviceError(error)).eraseToAnyPublisher()
@@ -113,10 +120,14 @@ final class CollectionInteractorTest: XCTestCase {
         let sut = makeSut(gateway: gateway)
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollection(page: 0, count: 3) {
-            collectionPageResult = $0
-            expectation.fulfill()
-        }
+        sut.loadCollection(page: 0, count: 3)
+            .sink(receiveCompletion: { result in
+                collectionPageResult = result
+                expectation.fulfill()
+
+            }, receiveValue: { _ in })
+            .store(in: &cancelables)
+        
         wait(for: [expectation], timeout: 2)
 
         XCTAssertEqual(collectionPageResult, .failure(.loading(error: .serviceError(error))))
@@ -127,7 +138,7 @@ final class CollectionInteractorTest: XCTestCase {
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
-        sut.loadCollectionItemImageData(from: url) { _ in }
+        _ = sut.loadCollectionItemImageData(from: url)
 
         XCTAssertTrue(gateway.loadCollectionImageDataCalled)
     }
@@ -135,7 +146,7 @@ final class CollectionInteractorTest: XCTestCase {
     func test_loadCollectionItemImageData_onLoadImage_onSuccessGivesImageData() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage!.url!
         let imageData = Data(count: 2)
-        var loadedImageResult: CollectionImageDataResult?
+        var loadedImageResult: Data?
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
 
@@ -144,19 +155,24 @@ final class CollectionInteractorTest: XCTestCase {
         }
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url) {
-            loadedImageResult = $0
-            expectation.fulfill()
-        }
+        sut.loadCollectionItemImageData(from: url)
+            .flatMap { Just<Data?>($0).eraseToAnyPublisher() }
+            .catch { _ in Just<Data?>(nil).eraseToAnyPublisher() }
+            .sink {
+                loadedImageResult = $0
+                expectation.fulfill()
+            }
+            .store(in: &cancelables)
+
         wait(for: [expectation], timeout: 2)
 
-        XCTAssertEqual(loadedImageResult, .success(imageData))
+        XCTAssertEqual(loadedImageResult, imageData)
     }
 
     func test_loadCollectionItemImageData_onLoadImage_onFailureGivesError() {
         let url = CollectionInfo.mocked.collectionItems.first!.webImage!.url!
         let error = ServiceLoadingError.invalidQuery
-        var loadedImageResult: CollectionImageDataResult?
+        var loadedImageResult: Subscribers.Completion<CollectionImageDataError>?
 
         let gateway = Gateway()
         let sut = makeSut(gateway: gateway)
@@ -166,10 +182,13 @@ final class CollectionInteractorTest: XCTestCase {
         }
 
         let expectation = XCTestExpectation(description: "\(#file) \(#function) \(#line)")
-        sut.loadCollectionItemImageData(from: url) {
-            loadedImageResult = $0
-            expectation.fulfill()
-        }
+        sut.loadCollectionItemImageData(from: url)
+            .sink(receiveCompletion: { result in
+                loadedImageResult = result
+                expectation.fulfill()
+
+            }, receiveValue: { _ in })
+            .store(in: &cancelables)
         wait(for: [expectation], timeout: 2)
 
         XCTAssertEqual(loadedImageResult, .failure(.loading(error: .serviceError(error))))

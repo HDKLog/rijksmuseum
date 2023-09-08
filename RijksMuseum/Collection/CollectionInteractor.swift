@@ -9,55 +9,33 @@ enum CollectionImageDataError: Error {
     case loading(error: CollectionImageLoadingError)
 }
 
-typealias CollectionResult = Result<CollectionPage, CollectionError>
-typealias CollectionResultHandler = (CollectionResult) -> Void
-
-typealias CollectionImageDataResult = Result<Data, CollectionImageDataError>
-typealias CollectionImageDataResultHandler = (CollectionImageDataResult) -> Void
-
 protocol CollectionInteracting {
-    func loadCollection(page: Int, count: Int, completion: @escaping CollectionResultHandler)
-    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageDataResultHandler)
+    func loadCollection(page: Int, count: Int) -> AnyPublisher<CollectionPage, CollectionError>
+    func loadCollectionItemImageData(from url: URL) -> AnyPublisher<Data, CollectionImageDataError>
 }
 
 class CollectionInteractor: CollectionInteracting {
 
     let gateway: ArtGateway
 
-    var cancelables: [AnyCancellable] = []
-
     init(gateway: ArtGateway) {
         self.gateway = gateway
     }
 
-    func loadCollection(page: Int, count: Int, completion: @escaping CollectionResultHandler) {
+    func loadCollection(page: Int, count: Int) -> AnyPublisher<CollectionPage, CollectionError> {
 
         gateway.loadCollection(page: page, count: count)
             .receive(on: DispatchQueue.main)
             .mapError(CollectionError.loading)
             .map { CollectionPage(title: "Page \(page)", items: $0.collectionItems) }
-            .sink(receiveCompletion: {
-                if case let .failure(error) = $0 {
-                    completion(.failure(error))
-                }
-            }, receiveValue: {
-                completion(.success($0))
-            })
-            .store(in: &cancelables)
+            .eraseToAnyPublisher()
     }
 
-    func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageDataResultHandler) {
+    func loadCollectionItemImageData(from url: URL) -> AnyPublisher<Data, CollectionImageDataError> {
         gateway.loadCollectionImageData(from: url)
             .receive(on: DispatchQueue.main)
             .mapError(CollectionImageDataError.loading)
-            .sink(receiveCompletion: {
-                if case let .failure(error) = $0 {
-                    completion(.failure(error))
-                }
-            }, receiveValue: {
-                completion(.success($0))
-            })
-            .store(in: &cancelables)
+            .eraseToAnyPublisher()
     }
 }
 

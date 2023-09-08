@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 
 @testable import RijksMuseum
 final class CollectionPresenterTest: XCTestCase {
@@ -35,18 +36,18 @@ final class CollectionPresenterTest: XCTestCase {
 
         var loadCollectionCalled: Bool { loadCollectionCalls > 0 }
         var loadCollectionCalls: Int = 0
-        var loadCollectionClosure: (Int, Int, @escaping CollectionResultHandler) -> Void = { _, _, _ in }
-        func loadCollection(page: Int, count: Int, completion: @escaping CollectionResultHandler){
+        var loadCollectionClosure: (Int, Int) -> AnyPublisher<CollectionPage, CollectionError> = { _, _ in Empty().eraseToAnyPublisher() }
+        func loadCollection(page: Int, count: Int) -> AnyPublisher<CollectionPage, CollectionError> {
             loadCollectionCalls += 1
-            loadCollectionClosure(page, count, completion)
+            return loadCollectionClosure(page, count)
         }
 
         var loadCollectionItemImageDataCalled: Bool { loadCollectionItemImageDataCalls > 0 }
         var loadCollectionItemImageDataCalls: Int = 0
-        var loadCollectionItemImageDataClosure: (URL, @escaping CollectionImageDataResultHandler) -> Void = { _, _ in }
-        func loadCollectionItemImageData(from url: URL, completion: @escaping CollectionImageDataResultHandler) {
+        var loadCollectionItemImageDataClosure: (URL) -> AnyPublisher<Data, CollectionImageDataError> = { _ in Empty().eraseToAnyPublisher() }
+        func loadCollectionItemImageData(from url: URL) -> AnyPublisher<Data, CollectionImageDataError> {
             loadCollectionItemImageDataCalls += 1
-            loadCollectionItemImageDataClosure(url, completion)
+            return loadCollectionItemImageDataClosure(url)
         }
     }
 
@@ -91,7 +92,10 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, _ in loadedPage = page}
+        interactor.loadCollectionClosure = { page, _ in
+            loadedPage = page
+            return Empty().eraseToAnyPublisher()
+        }
         let sut = makeSut(view: view, interactor: interactor)
 
         sut.loadCollection()
@@ -103,9 +107,9 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             loadedPage = page
-            completion(.success(.mocked))
+            return Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -117,8 +121,8 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onLoadCollection_onLoadingSuccessTellsViewToUpdateCollectionOnce() {
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -131,9 +135,9 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         var viewModel: CollectionViewModel?
-        interactor.loadCollectionClosure = { _, _, completion in
+        interactor.loadCollectionClosure = { _, _ in
             viewModel = nil
-            completion(.success(.mocked))
+            return Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
 
         view.configureClosure = { model in
@@ -151,9 +155,9 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             loadedPage = page
-            completion(.failure(.loading(error:.serviceError(.invalidQuery))))
+            return Fail(error: .loading(error:.serviceError(.invalidQuery))).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -166,9 +170,9 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         var viewModel: CollectionViewModel?
-        interactor.loadCollectionClosure = { _, _, completion in
+        interactor.loadCollectionClosure = { _, _ in
             viewModel = nil
-            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+            return Fail(error: .loading(error:.serviceError(.invalidQuery))).eraseToAnyPublisher()
         }
 
         view.configureClosure = { model in
@@ -185,8 +189,8 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onLoadCollection_onLoadingFailureTellsViewToDisplayError() {
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+        interactor.loadCollectionClosure = { _, _ in
+            Fail(error: .loading(error:.serviceError(.invalidQuery))).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -199,9 +203,9 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             loadedPage = page
-            completion(.success(CollectionPage(title: "", items: [])))
+            return Just(CollectionPage(title: "", items: [])).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -215,9 +219,9 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             loadedPage = page
-            completion(.success(.mocked))
+            return Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -230,12 +234,12 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             if loadedPage == nil {
                 loadedPage = page
-                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
-                return
+                return Fail(error: .loading(error: .serviceError(.invalidQuery))).eraseToAnyPublisher()
             }
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -248,11 +252,12 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             if loadedPage == nil {
                 loadedPage = page
-                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+                return Fail(error: .loading(error: .serviceError(.invalidQuery))).eraseToAnyPublisher()
             }
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -265,11 +270,12 @@ final class CollectionPresenterTest: XCTestCase {
         var loadedPage: Int?
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { page, _, completion in
+        interactor.loadCollectionClosure = { page, _ in
             if loadedPage == nil {
                 loadedPage = page
-                completion(.failure(.loading(error: .serviceError(.invalidQuery))))
+                return Fail(error: .loading(error: .serviceError(.invalidQuery))).eraseToAnyPublisher()
             }
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -291,8 +297,8 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onNumberOfPages_returnsNumberOfPages() {
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -304,8 +310,8 @@ final class CollectionPresenterTest: XCTestCase {
     func test_collectionPresenter_onNumberOfItems_returnsNumberOfItemsPages() {
         let view = View()
         let interactor = Interactor()
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -319,11 +325,11 @@ final class CollectionPresenterTest: XCTestCase {
         let interactor = Interactor()
         let mockedResult: CollectionPage = .mocked
         var loadedModel: CollectionViewCellModel?
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(mockedResult))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
-            complition(.success(Data()))
+        interactor.loadCollectionItemImageDataClosure = { url in
+            Just(Data()).setFailureType(to: CollectionImageDataError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -340,14 +346,15 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         var loadingUrl: URL?
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
+        interactor.loadCollectionItemImageDataClosure = { url in
             if loadingUrl == nil {
                 loadingUrl = url
-                complition(.failure(.loading(error: .serviceError(.invalidQuery))))
+                return Fail(error: .loading(error: .serviceError(.invalidQuery))).eraseToAnyPublisher()
             }
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -362,14 +369,15 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         var loadingUrl: URL?
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
+        interactor.loadCollectionItemImageDataClosure = { url in
             if loadingUrl == nil {
                 loadingUrl = url
-                complition(.failure(.loading(error: .serviceError(.invalidQuery))))
+                return Fail(error: .loading(error: .serviceError(.invalidQuery))).eraseToAnyPublisher()
             }
+            return Empty().eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -384,11 +392,11 @@ final class CollectionPresenterTest: XCTestCase {
         let view = View()
         let interactor = Interactor()
         var loadedModel: CollectionViewHeaderModel?
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
-        interactor.loadCollectionItemImageDataClosure = { url, complition in
-            complition(.success(Data()))
+        interactor.loadCollectionItemImageDataClosure = { url in
+            Just(Data()).setFailureType(to: CollectionImageDataError.self).eraseToAnyPublisher()
         }
         let sut = makeSut(view: view, interactor: interactor)
 
@@ -407,8 +415,8 @@ final class CollectionPresenterTest: XCTestCase {
         let router = Router()
         let sut = makeSut(view: view, interactor: interactor, router: router)
 
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
 
         sut.loadCollection()
@@ -425,8 +433,8 @@ final class CollectionPresenterTest: XCTestCase {
         let router = Router()
         let sut = makeSut(view: view, interactor: interactor, router: router)
 
-        interactor.loadCollectionClosure = { _, _, completion in
-            completion(.success(.mocked))
+        interactor.loadCollectionClosure = { _, _ in
+            Just(.mocked).setFailureType(to: CollectionError.self).eraseToAnyPublisher()
         }
 
         router.routeToArtDetailClosure = { id in
