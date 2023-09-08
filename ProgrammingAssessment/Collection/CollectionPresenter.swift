@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 protocol CollectionPresenting {
     func loadCollection()
@@ -24,6 +25,8 @@ class CollectionPresenter: CollectionPresenting {
 
     var collectionPages: [CollectionPage] = []
 
+    var cancellables: [AnyCancellable] = []
+
     init(view: CollectionView, interactor: CollectionInteracting) {
         self.view = view
         self.interactor = interactor
@@ -31,16 +34,17 @@ class CollectionPresenter: CollectionPresenting {
 
     func loadCollection() {
         view.configure(with: .loadingModel)
-        interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
-            switch result {
-            case let .success(pageinfo):
-                self?.view.configure(with: .loadSuccessModel)
-                self?.updateNext(page: pageinfo)
-            case let .failure(error):
+        interactor.loadCollection(page: currentPage, count: resultsOnPage)
+            .catch { [weak self] error in
                 self?.view.configure(with: .loadFailModel)
                 self?.view.displayError(error: error)
+                return Empty<CollectionPage, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-        }
+            .sink { [weak self] page in
+                self?.view.configure(with: .loadSuccessModel)
+                self?.updateNext(page: page)
+            }
+            .store(in: &cancellables)
     }
 
     func numberOfPages() -> Int {
@@ -60,15 +64,16 @@ class CollectionPresenter: CollectionPresenting {
             return
         }
         
-        interactor.loadCollectionItemImageData(from: url) {[weak self] result in
-            switch result {
-            case let .success(data):
-                completion(CollectionViewCellModel(imageData: data, title: item.title))
-            case let .failure(error):
+        interactor.loadCollectionItemImageData(from: url)
+            .catch { [weak self] error in
                 self?.view.displayError(error: error)
                 self?.itemModel(on: page, at: index, completion: completion)
+                return Empty<Data, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-        }
+            .sink {
+                completion(CollectionViewCellModel(imageData: $0, title: item.title))
+            }
+            .store(in: &cancellables)
     }
 
     func headerModel(on page: Int, completion: @escaping (CollectionViewHeaderModel) ->Void) {
@@ -81,15 +86,16 @@ class CollectionPresenter: CollectionPresenting {
     }
 
     func loadNextPage() {
-        interactor.loadCollection(page: currentPage, count: resultsOnPage) { [weak self] result in
-            switch result {
-            case let .success(pageinfo):
-                self?.updateNext(page: pageinfo)
-            case let .failure(error):
+        interactor.loadCollection(page: currentPage, count: resultsOnPage)
+            .catch { [weak self] error in
                 self?.view.displayError(error: error)
                 self?.loadNextPage()
+                return Empty<CollectionPage, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-        }
+            .sink { [weak self] page in
+                self?.updateNext(page: page)
+            }
+            .store(in: &cancellables)
     }
 
     func reload() {
