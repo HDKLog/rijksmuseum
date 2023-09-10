@@ -70,9 +70,11 @@ class CollectionPresenter: CollectionPresenting {
                 self?.itemModel(on: page, at: index, completion: completion)
                 return Empty<Data, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-            .sink {
+            .flatMap {
                 completion(CollectionViewCellModel(imageData: $0, title: item.title))
+                return Empty<Data, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
+            .sink { _ in }
             .store(in: &cancellables)
     }
 
@@ -92,9 +94,11 @@ class CollectionPresenter: CollectionPresenting {
                 self?.loadNextPage()
                 return Empty<CollectionPage, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
-            .sink { [weak self] page in
+            .flatMap { [weak self] page in
                 self?.updateNext(page: page)
+                return Empty<CollectionPage, Never>(completeImmediately: true).eraseToAnyPublisher()
             }
+            .sink { _ in }
             .store(in: &cancellables)
     }
 
