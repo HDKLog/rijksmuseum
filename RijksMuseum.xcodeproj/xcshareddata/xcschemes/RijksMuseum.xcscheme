@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4EFCB8762A8346B600648D78"
-               BuildableName = "ProgrammingAssessment.app"
-               BlueprintName = "ProgrammingAssessment"
-               ReferencedContainer = "container:ProgrammingAssessment.xcodeproj">
+               BuildableName = "RijksMuseum.app"
+               BlueprintName = "RijksMuseum"
+               ReferencedContainer = "container:RijksMuseum.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4EFCB88C2A8346B700648D78"
-               BuildableName = "ProgrammingAssessmentTests.xctest"
-               BlueprintName = "ProgrammingAssessmentTests"
-               ReferencedContainer = "container:ProgrammingAssessment.xcodeproj">
+               BuildableName = "RijksMuseumTests.xctest"
+               BlueprintName = "RijksMuseumTests"
+               ReferencedContainer = "container:RijksMuseum.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4EFCB8762A8346B600648D78"
-            BuildableName = "ProgrammingAssessment.app"
-            BlueprintName = "ProgrammingAssessment"
-            ReferencedContainer = "container:ProgrammingAssessment.xcodeproj">
+            BuildableName = "RijksMuseum.app"
+            BlueprintName = "RijksMuseum"
+            ReferencedContainer = "container:RijksMuseum.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -79,9 +79,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4EFCB8762A8346B600648D78"
-            BuildableName = "ProgrammingAssessment.app"
-            BlueprintName = "ProgrammingAssessment"
-            ReferencedContainer = "container:ProgrammingAssessment.xcodeproj">
+            BuildableName = "RijksMuseum.app"
+            BlueprintName = "RijksMuseum"
+            ReferencedContainer = "container:RijksMuseum.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

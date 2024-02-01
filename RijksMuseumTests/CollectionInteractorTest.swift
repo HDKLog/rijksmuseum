@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import ProgrammingAssessment
+@testable import RijksMuseum
 final class CollectionInteractorTest: XCTestCase {
 
     class Gateway: ArtGateway {

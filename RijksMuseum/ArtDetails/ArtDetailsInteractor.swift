@@ -1,6 +1,6 @@
 //
 //  ArtInteractor.swift
-//  ProgrammingAssessment
+//  RijksMuseum
 //
 //  Created by Gari Sarkisyan on 13.08.23.
 //

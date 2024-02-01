@@ -1,6 +1,6 @@
 //
 //  RijksmuseumServiceJsonQuery.swift
-//  ProgrammingAssessment
+//  RijksMuseum
 //
 //  Created by Gari Sarkisyan on 14.08.23.
 //

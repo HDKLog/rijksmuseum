@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import ProgrammingAssessment
+@testable import RijksMuseum
 class ArtDetailsPresenterTest: XCTestCase {
     class View: ArtDetailsView {
 

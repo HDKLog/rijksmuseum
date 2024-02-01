@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import ProgrammingAssessment
+@testable import RijksMuseum
 final class CollectionViewControllerTest: XCTestCase {
 
     class Presenter: CollectionPresenting {
@@ -153,6 +153,10 @@ final class CollectionViewControllerTest: XCTestCase {
     func test_viewController_onUpdateCollection_askPresenterForHeaderModel() {
         var numberOfPages = 0
         let presenter = Presenter()
+
+        presenter.headerModelClosure = {page, completion in
+            completion(.mocked)
+        }
         presenter.numberOfPagesClosure = {
             numberOfPages += 1
             return numberOfPages
@@ -160,6 +164,7 @@ final class CollectionViewControllerTest: XCTestCase {
         let sut = makeSut(presenter: presenter)
 
         sut.updateCollection()
+
 
         XCTAssertTrue(presenter.headerModelCalled)
     }
