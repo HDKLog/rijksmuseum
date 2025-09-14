@@ -234,7 +234,7 @@ class ArtDetailsPresenterTest: XCTestCase {
     func test_artDetailsPresenter_onLoadArt_loadArtDetailsSuccessWithLoadsImageSuccessUpdateViewImage() {
 
         let artDetails = ArtDetails.mocked
-        let imageData = UIImage(named: "AppIcon")!.pngData()!
+        let imageData = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=")!
         var loadedImageData: Data?
         let view = View()
         let interactor = Interactor()
@@ -309,7 +309,7 @@ extension ArtDetails {
     }
 }
 
-extension ArtDetailsViewModel.ArtDetails: Equatable {
+extension ArtDetailsViewModel.ArtDetails: @retroactive Equatable {
     public static func == (lhs: ArtDetailsViewModel.ArtDetails, rhs: ArtDetailsViewModel.ArtDetails) -> Bool {
         lhs.title == rhs.title &&
         lhs.description == rhs.description

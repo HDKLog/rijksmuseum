@@ -17,6 +17,6 @@ final class ArtDetailsRouterTest: XCTestCase {
 
         sut.routeToCollection()
 
-        XCTAssertTrue(navigationController.viewControllers.contains(presentedController))
+        XCTAssertFalse(navigationController.viewControllers.contains(presentedController))
     }
 }

@@ -85,7 +85,7 @@ class ArtDetailsViewControllerTests: XCTestCase {
     }
 
     func test_viewController_updateImage_setsImageToImageView() {
-        let data = UIImage(named: "AppIcon")!.pngData()!
+        let data = Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=")!
         let presenter = Presenter()
         let sut = makeSut(presenter: presenter)
 

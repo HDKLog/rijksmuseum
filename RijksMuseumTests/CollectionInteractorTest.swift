@@ -203,14 +203,14 @@ extension CollectionInfo {
     }
 }
 
-extension CollectionPage: Equatable {
+extension CollectionPage: @retroactive Equatable {
     public static func == (lhs: CollectionPage, rhs: CollectionPage) -> Bool {
         lhs.title == rhs.title &&
         lhs.items == rhs.items
     }
 }
 
-extension CollectionPage.CollectionItem: Equatable {
+extension CollectionPage.CollectionItem: @retroactive Equatable {
     public static func == (lhs: CollectionPage.CollectionItem, rhs: CollectionPage.CollectionItem) -> Bool {
         lhs.id == rhs.id &&
         lhs.title == rhs.title &&
@@ -220,7 +220,7 @@ extension CollectionPage.CollectionItem: Equatable {
     }
 }
 
-extension CollectionPage.CollectionItem.Image: Equatable {
+extension CollectionPage.CollectionItem.Image: @retroactive Equatable {
     public static func == (lhs: CollectionPage.CollectionItem.Image, rhs: CollectionPage.CollectionItem.Image) -> Bool {
         lhs.guid == rhs.guid &&
         lhs.width == rhs.width &&
@@ -229,13 +229,13 @@ extension CollectionPage.CollectionItem.Image: Equatable {
     }
 }
 
-extension CollectionError: Equatable {
+extension CollectionError: @retroactive Equatable {
     public static func == (lhs: CollectionError, rhs: CollectionError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
 
-extension CollectionImageDataError: Equatable {
+extension CollectionImageDataError: @retroactive Equatable {
     public static func == (lhs: CollectionImageDataError, rhs: CollectionImageDataError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }

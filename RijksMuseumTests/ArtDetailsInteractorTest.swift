@@ -187,7 +187,7 @@ extension ArtDetailsInfo {
     }
 }
 
-extension ArtDetails: Equatable {
+extension ArtDetails: @retroactive Equatable {
     public static func == (lhs: ArtDetails, rhs: ArtDetails) -> Bool {
         lhs.id == rhs.id &&
         lhs.title == rhs.title &&
@@ -196,7 +196,7 @@ extension ArtDetails: Equatable {
     }
 }
 
-extension ArtDetails.Image: Equatable {
+extension ArtDetails.Image: @retroactive Equatable {
     public static func == (lhs: ArtDetails.Image, rhs: ArtDetails.Image) -> Bool {
         lhs.guid == rhs.guid &&
         lhs.width == rhs.width &&
@@ -205,13 +205,13 @@ extension ArtDetails.Image: Equatable {
     }
 }
 
-extension ArtDetailsError: Equatable {
+extension ArtDetailsError: @retroactive Equatable {
     public static func == (lhs: ArtDetailsError, rhs: ArtDetailsError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
 }
 
-extension ArtDetailsImageError: Equatable {
+extension ArtDetailsImageError: @retroactive Equatable {
     public static func == (lhs: ArtDetailsImageError, rhs: ArtDetailsImageError) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }

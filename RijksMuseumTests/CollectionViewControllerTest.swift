@@ -316,7 +316,10 @@ final class CollectionViewControllerTest: XCTestCase {
 
 extension CollectionViewCellModel {
     static var mocked: CollectionViewCellModel {
-        CollectionViewCellModel(tileModel: .init(imageData: UIImage(named: "AppIcon")!.pngData()!, title: "Title"))
+        CollectionViewCellModel(tileModel: .init(
+            imageData: Data(base64Encoded: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=")!,
+            title: "Title")
+        )
     }
 }
 
